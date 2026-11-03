@@ -56,8 +56,8 @@ const styles = StyleSheet.create({
 
 function RoleEntry({ role }: { role: Role }) {
   return (
-    <View style={styles.role}>
-      <View style={styles.roleLine} wrap={false}>
+    <View style={styles.role} wrap={false}>
+      <View style={styles.roleLine}>
         <Text style={styles.roleTitle}>{role.title}</Text>
         <Text style={styles.dates}>{formatRange(role.start, role.end)}</Text>
       </View>

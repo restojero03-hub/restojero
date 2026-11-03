@@ -31,7 +31,7 @@ export function ConexaFeature() {
 
             <div className="mt-6 flex flex-wrap gap-3">
               <Button asChild size="lg">
-                <Link href="/work/conexa-pro">Read the case study</Link>
+                <Link prefetch={false} href="/work/conexa-pro">Read the case study</Link>
               </Button>
               <Button asChild size="lg" variant="outline">
                 <a href={site.links.conexa} target="_blank" rel="noopener noreferrer">

@@ -18,7 +18,7 @@ export function FunnelFeature() {
 
         <div className="mt-10 flex flex-wrap gap-3">
           <Button asChild size="lg">
-            <Link href="/work/meta-ads-funnel">Read the case study</Link>
+            <Link prefetch={false} href="/work/meta-ads-funnel">Read the case study</Link>
           </Button>
           <Button asChild size="lg" variant="outline">
             <a href={site.links.funnel} target="_blank" rel="noopener noreferrer">

@@ -13,7 +13,7 @@ export function SiteHeader() {
   return (
     <header className="border-b bg-background print:hidden">
       <div className="page-width flex flex-wrap items-center justify-between gap-x-6 gap-y-1 py-3">
-        <Link href="/" className="text-lg font-semibold [font-stretch:82%]">
+        <Link prefetch={false} href="/" className="text-lg font-semibold [font-stretch:82%]">
           {site.name}
         </Link>
         <div className="flex items-center gap-1 sm:order-3">
@@ -25,6 +25,7 @@ export function SiteHeader() {
         >
           {nav.map((item) => (
             <Link
+              prefetch={false}
               key={item.href}
               href={item.href}
               className="rounded-sm px-2 py-2 text-sm font-medium hover:underline hover:underline-offset-4"

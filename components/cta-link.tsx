@@ -15,7 +15,7 @@ export function PrimaryCta({ size = "lg", className }: ButtonProps) {
           {cta.label}
         </a>
       ) : (
-        <Link href={cta.href}>{cta.label}</Link>
+        <Link prefetch={false} href={cta.href}>{cta.label}</Link>
       )}
     </Button>
   );

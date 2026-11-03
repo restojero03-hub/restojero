@@ -1,11 +1,12 @@
 import { beforeAll, describe, expect, test } from "vitest";
 import { getDocument } from "pdfjs-dist/legacy/build/pdf.mjs";
 import { renderCv } from "@/pdf/cv-document";
-import { cvEmail } from "@/content/resume";
+import { cvEmail, resume } from "@/content/resume";
 import { findPrivateTerms, PHONE_PATTERN } from "./helpers/private-terms";
 
 let text = "";
 let pageCount = 0;
+const pages: string[] = [];
 
 beforeAll(async () => {
   const buffer = await renderCv();
@@ -18,7 +19,9 @@ beforeAll(async () => {
   for (let n = 1; n <= pdf.numPages; n++) {
     const page = await pdf.getPage(n);
     const content = await page.getTextContent();
-    text += content.items.map((item) => ("str" in item ? item.str : "")).join(" ") + "\n";
+    const pageText = content.items.map((item) => ("str" in item ? item.str : "")).join(" ");
+    pages.push(pageText);
+    text += pageText + "\n";
   }
 }, 30_000);
 
@@ -58,6 +61,15 @@ describe("the CV PDF", () => {
     expect(order).toEqual([...order].sort((a, b) => a - b));
     expect(text.indexOf("Summary")).toBeLessThan(text.indexOf("Experience"));
     expect(text.indexOf("Experience")).toBeLessThan(text.indexOf("Education"));
+  });
+
+  test("never splits a job across two pages", () => {
+    for (const role of [...resume.roles, ...resume.engineering]) {
+      const entry = `${role.title}|${role.company}`;
+      const titlePage = pages.findIndex((page) => page.includes(role.title));
+      const companyPage = pages.findIndex((page) => page.includes(`${role.company}, ${role.employment}`));
+      expect(titlePage, entry).toBe(companyPage);
+    }
   });
 
   test("fits on 2 pages", () => {

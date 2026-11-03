@@ -28,7 +28,7 @@ function ProjectCard({ project, wide }: { project: Project; wide: boolean }) {
         {(project.caseStudy || project.href) && (
           <p className="mt-4 flex flex-wrap gap-x-4 gap-y-1 text-sm">
             {project.caseStudy && (
-              <Link className="text-link" href={`/work/${project.caseStudy}`}>
+              <Link prefetch={false} className="text-link" href={`/work/${project.caseStudy}`}>
                 Read the case study
               </Link>
             )}

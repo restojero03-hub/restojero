@@ -65,6 +65,18 @@ test("server-only validation code never reaches the browser", async ({ page, req
   }
 });
 
+test.describe("without JavaScript", () => {
+  test.use({ javaScriptEnabled: false });
+
+  test("FAQ answers still open", async ({ page }) => {
+    await page.goto("/");
+    const answer = page.getByText("permissions are checked on every API call");
+    await expect(answer).toBeHidden();
+    await page.getByText("How do you keep my customers' data separate?").click();
+    await expect(answer).toBeVisible();
+  });
+});
+
 test("in-page navigation targets exist", async ({ page }) => {
   await page.goto("/");
   for (const id of ["work", "about", "projects", "contact"]) {
