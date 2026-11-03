@@ -1,0 +1,239 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --font-sans: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
+  --font-heading: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, monospace;
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-link: var(--link);
+
+  --radius-sm: 2px;
+  --radius-md: 2px;
+  --radius-lg: var(--radius);
+  --radius-xl: var(--radius);
+  --radius-2xl: var(--radius);
+  --radius-3xl: var(--radius);
+  --radius-4xl: var(--radius);
+}
+
+:root {
+  --radius: 3px;
+
+  /* Drawing paper, navy ink, one blue. */
+  --background: #f3f6f9;
+  --foreground: #10233f;
+  --card: #ffffff;
+  --card-foreground: #10233f;
+  --popover: #ffffff;
+  --popover-foreground: #10233f;
+  --primary: #2563eb;
+  --primary-foreground: #ffffff;
+  --secondary: #e4eaf1;
+  --secondary-foreground: #10233f;
+  --muted: #e4eaf1;
+  --muted-foreground: #46586f;
+  --accent: #e4eaf1;
+  --accent-foreground: #10233f;
+  --destructive: #b42318;
+  --border: #c5d0dc;
+  --input: #9fb0c3;
+  --ring: #2563eb;
+  --link: #1d4fd7;
+
+  --grid-minor: rgb(37 99 235 / 0.055);
+  --grid-major: rgb(37 99 235 / 0.1);
+  --dimension: #6b7f97;
+
+  /* The contact section stays a true blueprint in both themes. */
+  --blueprint: #123a7a;
+  --blueprint-ink: #f3f6f9;
+  --blueprint-soft: #c7d6ec;
+  --blueprint-rule: rgb(255 255 255 / 0.28);
+  --blueprint-grid: rgb(255 255 255 / 0.07);
+}
+
+.dark {
+  --background: #0b1a30;
+  --foreground: #e7eef7;
+  --card: #10233f;
+  --card-foreground: #e7eef7;
+  --popover: #10233f;
+  --popover-foreground: #e7eef7;
+  --primary: #2563eb;
+  --primary-foreground: #ffffff;
+  --secondary: #1a3050;
+  --secondary-foreground: #e7eef7;
+  --muted: #1a3050;
+  --muted-foreground: #a9b8cb;
+  --accent: #1a3050;
+  --accent-foreground: #e7eef7;
+  --destructive: #f97066;
+  --border: #2a4263;
+  --input: #3d5a80;
+  --ring: #6ea0ff;
+  --link: #8db4ff;
+
+  --grid-minor: rgb(110 160 255 / 0.05);
+  --grid-major: rgb(110 160 255 / 0.09);
+  --dimension: #7f95b2;
+
+  --blueprint: #123a7a;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-background text-foreground font-sans;
+    background-image:
+      linear-gradient(var(--grid-major) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid-major) 1px, transparent 1px),
+      linear-gradient(var(--grid-minor) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid-minor) 1px, transparent 1px);
+    background-size:
+      120px 120px,
+      120px 120px,
+      24px 24px,
+      24px 24px;
+  }
+  h1,
+  h2,
+  h3 {
+    font-stretch: 82%;
+    text-wrap: balance;
+  }
+  p {
+    text-wrap: pretty;
+  }
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+}
+
+@layer components {
+  .page-width {
+    @apply mx-auto w-full max-w-[1200px] px-4 sm:px-6 lg:px-8;
+  }
+
+  .text-link {
+    @apply font-medium underline decoration-1 underline-offset-4 hover:decoration-2;
+    color: var(--link);
+  }
+
+  /* Small lettering used on drawings: captions, callouts, title block cells. */
+  .drawing-label {
+    @apply font-mono text-xs text-muted-foreground;
+  }
+
+  /* A drawing frame: square corners with registration ticks outside each corner. */
+  .drawing-frame {
+    position: relative;
+    border: 1px solid var(--dimension);
+    background: var(--card);
+  }
+  .drawing-frame::before,
+  .drawing-frame::after {
+    content: "";
+    position: absolute;
+    width: 11px;
+    height: 11px;
+    pointer-events: none;
+  }
+  .drawing-frame::before {
+    top: -6px;
+    left: -6px;
+    border-top: 1px solid var(--dimension);
+    border-left: 1px solid var(--dimension);
+  }
+  .drawing-frame::after {
+    right: -6px;
+    bottom: -6px;
+    border-right: 1px solid var(--dimension);
+    border-bottom: 1px solid var(--dimension);
+  }
+
+  /* Numbered balloon callout, as on an assembly drawing. */
+  .balloon {
+    @apply inline-flex size-6 shrink-0 items-center justify-center rounded-full font-mono text-xs;
+    border: 1.5px solid var(--primary);
+    background: var(--card);
+    color: var(--link);
+  }
+
+  /* The hero's dimension line draws itself once on load. */
+  .draw-x {
+    transform-origin: left center;
+    animation: draw-x 900ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .draw-x {
+      animation: none;
+    }
+  }
+}
+
+@keyframes draw-x {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@media print {
+  /* Paper is always light, whichever theme the visitor is using. */
+  :root,
+  .dark {
+    --background: #ffffff;
+    --foreground: #000000;
+    --card: #ffffff;
+    --card-foreground: #000000;
+    --secondary: #ffffff;
+    --muted-foreground: #333333;
+    --border: #999999;
+    --link: #000000;
+    --dimension: #666666;
+  }
+  html,
+  body {
+    background: #ffffff !important;
+    background-image: none !important;
+    color: #000000 !important;
+  }
+  @page {
+    margin: 14mm;
+  }
+}
