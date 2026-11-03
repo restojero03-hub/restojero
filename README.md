@@ -6,7 +6,7 @@ Built with Next.js (App Router), TypeScript, Tailwind CSS and shadcn/ui. Pages a
 
 ## Run it locally
 
-You need Node.js 22 or newer.
+You need Node.js 24.
 
 ```bash
 npm install
