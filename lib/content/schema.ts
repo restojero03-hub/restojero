@@ -5,10 +5,16 @@ import { z } from "zod";
 
 const webUrl = z.url({ protocol: /^https?$/ });
 const text = z.string().trim().min(1);
-const imageSrc = z.string().regex(/^(\/|https:\/\/)/, "Use an uploaded image or a full https link");
+// Only files in this site or uploads to its image store, because next/image refuses other hosts
+// and one bad link would break the whole page.
+const imageSrc = z
+  .string()
+  .regex(/^(\/(?!\/)|https:\/\/[a-z0-9]+\.public\.blob\.vercel-storage\.com\/)/, "Upload the image from the dashboard");
 const yearMonth = z.string().regex(/^\d{4}-(0[1-9]|1[0-2])$/, "Use YYYY-MM");
 
 const image = z.object({ src: imageSrc, alt: text });
+
+export const CONTENT_ID = "main";
 
 export const socialIcons = ["linkedin", "upwork", "github", "facebook", "website"] as const;
 

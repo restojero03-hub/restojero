@@ -45,6 +45,7 @@ docs/reference/
 assets-inbox/
 
 # generated at build time
+lib/generated/
 public/ronil-estojero-cv.pdf
 test-results/
 playwright-report/

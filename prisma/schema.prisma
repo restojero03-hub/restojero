@@ -1,0 +1,27 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../lib/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// All of the site's content as one validated document. There is only ever one row.
+model SiteContent {
+  id        String   @id
+  data      Json
+  updatedAt DateTime @updatedAt
+}
+
+// Messages sent through the contact form, shown in the dashboard inbox.
+model Message {
+  id        String    @id @default(cuid())
+  name      String
+  email     String
+  body      String
+  readAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([createdAt])
+}

@@ -65,7 +65,7 @@ describe("sitemap", () => {
 describe("robots", () => {
   test("allows the site, keeps the dashboard out, and points to the sitemap", () => {
     const result = robots();
-    expect(result.rules).toEqual({ userAgent: "*", allow: "/", disallow: "/dashboard" });
+    expect(result.rules).toEqual({ userAgent: "*", allow: "/", disallow: ["/dashboard", "/sign-in"] });
     expect(result.sitemap).toBe("https://restojero.vercel.app/sitemap.xml");
   });
 });

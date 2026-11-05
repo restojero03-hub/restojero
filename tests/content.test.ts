@@ -191,3 +191,23 @@ describe("the schema", () => {
     expect(() => siteContentSchema.parse(content)).not.toThrow();
   });
 });
+
+describe("image links", () => {
+  const withCover = (src: string) => {
+    const copy = structuredClone(defaultContent);
+    copy.portfolio.items[0].cover.src = src;
+    return siteContentSchema.safeParse(copy).success;
+  };
+
+  test("allows files in the site and uploads to the image store", () => {
+    expect(withCover("/images/work/funnel-cover.webp")).toBe(true);
+    expect(withCover("https://abc123.public.blob.vercel-storage.com/photo.webp")).toBe(true);
+  });
+
+  test("refuses other hosts, which next/image would fail on", () => {
+    expect(withCover("https://example.com/photo.webp")).toBe(false);
+    expect(withCover("//example.com/photo.webp")).toBe(false);
+    expect(withCover("https://abc123.public.blob.vercel-storage.com.example.com/photo.webp")).toBe(false);
+    expect(withCover("javascript:alert(1)")).toBe(false);
+  });
+});
