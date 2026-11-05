@@ -143,6 +143,12 @@ describe("the portfolio", () => {
       "Vercel",
     ]);
     expect(conexa.body[0]).toContain("multi-tenant B2B SaaS");
+    expect(conexa.cover.src).toBe("/images/work/conexa-cover.webp");
+    expect(conexa.gallery.map((image) => image.src)).toEqual(
+      [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map(
+        (number) => `/images/work/conexa-slide-${String(number).padStart(2, "0")}.webp`,
+      ),
+    );
     expect(conexa.facts).toContainEqual({ label: "My role", value: "Solo Full-Stack Developer and Product Owner" });
   });
 });
