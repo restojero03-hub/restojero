@@ -1,11 +1,12 @@
 import type { ReactNode } from "react";
 import { SiteFooter } from "@/components/site/site-footer";
 import { SiteHeader } from "@/components/site/site-header";
-import { getContent } from "@/lib/content/get-content";
+import { getPublicContent } from "@/lib/content/get-content";
+import { navLinks } from "@/lib/content/nav";
 import { jsonLdScript, personJsonLd } from "@/lib/json-ld";
 
 export default async function SiteLayout({ children }: { children: ReactNode }) {
-  const content = await getContent();
+  const content = await getPublicContent();
   const { site } = content;
 
   return (
@@ -16,7 +17,7 @@ export default async function SiteLayout({ children }: { children: ReactNode }) 
       >
         Skip to content
       </a>
-      <SiteHeader logoText={site.logoText} photo={content.hero.photo} calUrl={site.calUrl} />
+      <SiteHeader logoText={site.logoText} photo={content.hero.photo} calUrl={site.calUrl} links={navLinks(content)} />
       <main id="main" className="flex-1">
         {children}
       </main>

@@ -2,7 +2,6 @@ import Image from "next/image";
 import { BookCallButton } from "@/components/site/book-call-button";
 import { SocialLinks } from "@/components/site/social-links";
 import { TypedTitles } from "@/components/site/typed-titles";
-import { shown } from "@/lib/content/list";
 import { CV_PATH } from "@/lib/cv";
 import type { SiteContent, Tool } from "@/lib/content/schema";
 import { cn } from "@/lib/utils";
@@ -72,7 +71,7 @@ export function Hero({ hero, site }: { hero: SiteContent["hero"]; site: SiteCont
             <div>
               <p className="meta-label">{hero.toolsLabel}</p>
               <ul className="flex flex-wrap gap-5">
-                {shown(hero.tools).map((tool) => (
+                {hero.tools.map((tool) => (
                   <ToolTile key={tool.name} tool={tool} />
                 ))}
               </ul>

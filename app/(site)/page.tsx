@@ -5,14 +5,14 @@ import { Hero } from "@/components/site/hero";
 import { Portfolio } from "@/components/site/portfolio";
 import { Resume } from "@/components/site/resume";
 import { Services } from "@/components/site/services";
-import { getContent } from "@/lib/content/get-content";
+import { getPublicContent } from "@/lib/content/get-content";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/" },
 };
 
 export default async function Home() {
-  const content = await getContent();
+  const content = await getPublicContent();
 
   return (
     <>

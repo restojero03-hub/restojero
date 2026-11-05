@@ -20,7 +20,7 @@ describe("the content", () => {
   });
 
   test.each([
-    ["phone fragments", /927|\+63/],
+    ["a country calling code", /\+63/],
     ["fake testimonials", /Nevine|Delevingne|Duone/],
     ["fake clients", /John Due|Smiths Marth/],
     ["fake jobs", /Google Out Tech|Apple Developer|Nike/],

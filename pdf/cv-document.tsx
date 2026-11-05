@@ -9,7 +9,7 @@ import {
   View,
 } from "@react-pdf/renderer";
 import type { Role, SiteContent } from "@/lib/content/schema";
-import { shown } from "@/lib/content/list";
+import { withoutHidden } from "@/lib/content/list";
 import { formatRange } from "@/lib/format";
 import { getSiteUrl } from "@/lib/site-url";
 
@@ -74,7 +74,7 @@ function RoleEntry({ role }: { role: Role }) {
 }
 
 function CvDocument({ content }: { content: SiteContent }) {
-  const { site, resume } = content;
+  const { site, resume } = withoutHidden(content);
   const siteUrl = getSiteUrl();
 
   return (
@@ -94,7 +94,7 @@ function CvDocument({ content }: { content: SiteContent }) {
           <Link style={styles.link} src={siteUrl}>
             {siteUrl.replace("https://", "")}
           </Link>
-          {shown(site.socialLinks).map((link) => (
+          {site.socialLinks.map((link) => (
             <Text key={link.url}>
               {" | "}
               <Link style={styles.link} src={link.url}>
@@ -108,17 +108,17 @@ function CvDocument({ content }: { content: SiteContent }) {
         <Text>{resume.summary}</Text>
 
         <Text style={styles.heading}>Experience</Text>
-        {shown(resume.roles).map((role) => (
+        {resume.roles.map((role) => (
           <RoleEntry key={`${role.company}-${role.start}`} role={role} />
         ))}
 
         <Text style={styles.heading}>Engineering background</Text>
-        {shown(resume.engineering).map((role) => (
+        {resume.engineering.map((role) => (
           <RoleEntry key={`${role.company}-${role.start}`} role={role} />
         ))}
 
         <Text style={styles.heading}>Education and certifications</Text>
-        {shown(resume.education).map((item) => (
+        {resume.education.map((item) => (
           <View key={item.title} style={styles.entry} wrap={false}>
             <View style={styles.roleLine}>
               <Text style={styles.roleTitle}>{item.title}</Text>
@@ -132,7 +132,7 @@ function CvDocument({ content }: { content: SiteContent }) {
         ))}
 
         <Text style={styles.heading}>Skills</Text>
-        {shown(resume.skillGroups).map((group) => (
+        {resume.skillGroups.map((group) => (
           <Text key={group.name} style={styles.entry}>
             <Text style={styles.strong}>{group.name}: </Text>
             {group.skills.join(", ")}

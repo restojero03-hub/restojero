@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { PHONE_PATTERN } from "../tests/helpers/private-terms";
 
 test.describe("the page", () => {
   test("shows the sections in the approved order", async ({ page }) => {
@@ -26,6 +27,7 @@ test.describe("the page", () => {
     const html = await page.content();
     expect(html).not.toContain("restojero@gmail.com");
     expect(html).not.toContain("tel:");
+    expect(await page.locator("body").innerText()).not.toMatch(PHONE_PATTERN);
   });
 
   test("has no percent bars or like counts", async ({ page }) => {
@@ -66,6 +68,7 @@ test.describe("the portfolio", () => {
     await page.goto("/");
     await expect(cards(page)).toHaveCount(6);
     await page.getByRole("button", { name: "Load more" }).click();
+    await expect(page.locator("#portfolio li button").nth(6)).toBeFocused();
     await expect(cards(page)).toHaveCount(7);
     await expect(page.getByRole("button", { name: "Load more" })).toHaveCount(0);
   });
@@ -227,6 +230,26 @@ for (const width of [320, 375]) {
       await noSideScroll(page);
       const box = await page.getByRole("dialog").boundingBox();
       expect(box!.width).toBeLessThanOrEqual(width);
+    });
+
+    test("the pop-up's Close button stays in view while it scrolls", async ({ page }) => {
+      await page.goto("/#project-meta-ads-funnel");
+      const dialog = page.getByRole("dialog");
+      await expect(dialog).toBeVisible();
+      await dialog.evaluate((element) => element.scrollTo(0, element.scrollHeight));
+      await expect(dialog.getByRole("button", { name: "Close" })).toBeInViewport({ ratio: 1 });
+    });
+
+    test("the menu takes keyboard focus and Escape closes it", async ({ page }) => {
+      await page.goto("/");
+      const toggle = page.getByRole("button", { name: "Open menu" });
+      await toggle.focus();
+      await page.keyboard.press("Enter");
+      const nav = page.getByRole("navigation", { name: "Main" });
+      await expect(nav.getByRole("link", { name: "About" })).toBeFocused();
+      await page.keyboard.press("Escape");
+      await expect(nav).toBeHidden();
+      await expect(page.getByRole("button", { name: "Open menu" })).toBeFocused();
     });
 
     test("the menu opens and its links work", async ({ page }) => {

@@ -3,6 +3,8 @@
 import { useEffect, useState, useTransition, type ReactNode } from "react";
 import { saveSection, type SaveResult } from "@/lib/content/actions";
 import { sectionLabels, type SectionKey } from "@/lib/content/sections";
+import { CV_PATH } from "@/lib/cv";
+import { setUnsavedChanges } from "@/lib/dashboard/unsaved";
 
 // "items.0.slug" reads as "items 1 > slug", counting from one like a person would.
 function readablePath(path: string): string {
@@ -30,21 +32,32 @@ export function SectionForm<T extends object>({ section, initial, children }: Se
 
   useEffect(() => {
     if (!dirty) return;
+    setUnsavedChanges(true);
     const warn = (event: BeforeUnloadEvent) => event.preventDefault();
     window.addEventListener("beforeunload", warn);
-    return () => window.removeEventListener("beforeunload", warn);
+    return () => {
+      setUnsavedChanges(false);
+      window.removeEventListener("beforeunload", warn);
+    };
   }, [dirty]);
 
   function save() {
     startTransition(async () => {
       const next = await saveSection(section, draft);
       setResult(next);
-      if (next.status === "saved") setSaved(draft);
+      if (next.status === "saved") {
+        setSaved(draft);
+        // Rebuild now, while the database is known to be up, so no visitor has to.
+        for (const path of ["/", CV_PATH]) void fetch(path).catch(() => {});
+      }
     });
   }
 
   return (
+    // noValidate: a browser check on a field inside a closed card would stop the save with no
+    // visible message. The server checks everything and lists any problems.
     <form
+      noValidate
       onSubmit={(event) => {
         event.preventDefault();
         save();

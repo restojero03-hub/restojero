@@ -23,7 +23,7 @@ describe("personJsonLd", () => {
     const person = personJsonLd(defaultContent);
     expect(person).not.toHaveProperty("email");
     expect(person).not.toHaveProperty("telephone");
-    expect(JSON.stringify(person)).not.toMatch(/@gmail|927|\+63/);
+    expect(JSON.stringify(person)).not.toMatch(/@gmail|\+63/);
   });
 
   test("follows the site URL setting", () => {

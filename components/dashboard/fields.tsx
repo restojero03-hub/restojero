@@ -2,7 +2,7 @@
 
 import { upload } from "@vercel/blob/client";
 import { ArrowDown, ArrowUp, ChevronDown, ChevronRight, Trash2, Upload } from "lucide-react";
-import { useRef, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { moveItem } from "@/lib/content/list";
 import { checkImageFile } from "@/lib/content/upload-rules";
 
@@ -284,6 +284,17 @@ function ImageUploadButton({ onUploaded }: { onUploaded: (url: string) => void }
   const [busy, setBusy] = useState(false);
   const [problem, setProblem] = useState<string | null>(null);
 
+  // An upload takes a while and the form can change meanwhile. Calling the handler from when
+  // the file was chosen would undo those edits, so this always holds the newest one, or
+  // null once this field is gone.
+  const latestOnUploaded = useRef<((url: string) => void) | null>(null);
+  useEffect(() => {
+    latestOnUploaded.current = onUploaded;
+    return () => {
+      latestOnUploaded.current = null;
+    };
+  }, [onUploaded]);
+
   async function send(file: File) {
     const fileProblem = checkImageFile(file);
     setProblem(fileProblem);
@@ -293,7 +304,7 @@ function ImageUploadButton({ onUploaded }: { onUploaded: (url: string) => void }
     try {
       const safeName = file.name.replace(/[^\w.-]+/g, "-");
       const blob = await upload(`uploads/${safeName}`, file, { access: "public", handleUploadUrl: "/api/upload" });
-      onUploaded(blob.url);
+      latestOnUploaded.current?.(blob.url);
     } catch (error) {
       console.error("Upload failed", error);
       setProblem("The upload didn't work. Please try again.");

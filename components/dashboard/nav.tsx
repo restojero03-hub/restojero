@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { sectionKeys, sectionLabels } from "@/lib/content/sections";
+import { confirmLeaving } from "@/lib/dashboard/unsaved";
 import { cn } from "@/lib/utils";
 
 export function DashboardNav({ unread }: { unread: number }) {
@@ -21,6 +22,9 @@ export function DashboardNav({ unread }: { unread: number }) {
             key={link.href}
             href={link.href}
             aria-current={active ? "page" : undefined}
+            onClick={(event) => {
+              if (!confirmLeaving()) event.preventDefault();
+            }}
             className={cn(
               "flex min-h-10 items-center gap-2 rounded-md px-3 text-sm font-medium transition-colors hover:text-pink-text",
               active && "neu text-pink-text",

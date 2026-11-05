@@ -2,6 +2,7 @@
 
 import { ExternalLink, X } from "lucide-react";
 import { useRef, useState } from "react";
+import { calEmbedUrl } from "@/lib/cal";
 
 type BookCallButtonProps = {
   calUrl: string | null;
@@ -57,7 +58,7 @@ export function BookCallButton({ calUrl, className }: BookCallButtonProps) {
         </div>
         {opened && (
           <iframe
-            src={`${calUrl}?embed=true`}
+            src={calEmbedUrl(calUrl)}
             title="Book a call with Ronil Estojero"
             className="h-[75dvh] w-full border-0 bg-white"
           />

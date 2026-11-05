@@ -78,7 +78,7 @@ e2e/                playwright checks
 - `projects: Project[]` with `{ title, client, date, summary, stack, href: string | null, caseStudy: string | null, image: { src, alt } | null }`
 - `resume: { summary, roles: Role[], engineering: Role[], education: Education[], tools: ToolGroup[], languages: string[] }`
 
-- [ ] Write failing `tests/content.test.ts`, walking every exported string. Asserts: no phone pattern (`927`, `+63`); the old CV's references absent, checked by hash because the repo is public; no `lorem`, `Hitatchi`, `Google Out Tech`, `Nike`, `Facebook`, `$30`, `$6K`; no `Manila`; no `10+`/`11+` year counts; `site.email` only exported from `site.ts`; Home of Aesthetics ends `Jun 2026`; roles newest first; `projects[0].title` is `CoNexa Pro` with `href` `https://app.conexapro.io`; OnlineTabo and Modern Resolve have `href: null`
+- [ ] Write failing `tests/content.test.ts`, walking every exported string. Asserts: no phone pattern (`the real phone number`, `+63`); the old CV's references absent, checked by hash because the repo is public; no `lorem`, `Hitatchi`, `Google Out Tech`, `Nike`, `Facebook`, `$30`, `$6K`; no `Manila`; no `10+`/`11+` year counts; `site.email` only exported from `site.ts`; Home of Aesthetics ends `Jun 2026`; roles newest first; `projects[0].title` is `CoNexa Pro` with `href` `https://app.conexapro.io`; OnlineTabo and Modern Resolve have `href: null`
 - [ ] Write failing `tests/cta.test.ts`: `primaryCta(null)` returns `{ label: "Let's talk", href: '/contact', external: false }`; `primaryCta('https://cal.com/x')` returns `{ label: 'Book a call', href: 'https://cal.com/x', external: true }`
 - [ ] Implement the content from handover Sections 3 and 5 and the spec's decisions; tests pass
 - [ ] Commit

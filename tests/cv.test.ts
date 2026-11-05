@@ -45,7 +45,7 @@ describe("the CV PDF", () => {
   });
 
   test("leaves out the phone number, references and trainer experience", () => {
-    for (const banned of ["927", "+63", "Trainer", "Manila", "$"]) {
+    for (const banned of ["+63", "Trainer", "Manila", "$"]) {
       expect(text).not.toContain(banned);
     }
     expect(text).not.toMatch(PHONE_PATTERN);

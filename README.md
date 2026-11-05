@@ -66,7 +66,7 @@ npm run db:migrate
 
 `npm run db:seed` puts the starter copy in an empty database. It never overwrites saved edits.
 
-Saved content is checked against `lib/content/schema.ts` every time it's read. If you add a required field, give it a default, or a read of older content will fail. A failed read keeps the last good page online.
+Saved content is checked against `lib/content/schema.ts` every time it's read. If you add a required field, give it a default, or a read of older content will fail. A failed read never swaps in the starter copy: a build fails and the last deployment stays online, and a page being rebuilt shows a short "try again" page until the database is back. Saving rebuilds the public pages straight away, so a visitor would only see that during an outage in the moment after a save.
 
 ## Check your work
 

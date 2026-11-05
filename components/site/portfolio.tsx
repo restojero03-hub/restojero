@@ -106,9 +106,18 @@ function ProjectDetail({ project }: { project: Project }) {
 }
 
 export function Portfolio({ portfolio }: { portfolio: SiteContent["portfolio"] }) {
-  const projects = portfolio.items.filter((project) => project.visible);
+  const projects = portfolio.items;
   const [visibleCount, setVisibleCount] = useState(portfolio.initialCount);
   const dialog = useRef<HTMLDialogElement>(null);
+  const cards = useRef<HTMLUListElement>(null);
+  const focusCard = useRef<number | null>(null);
+
+  // Load more can disappear once everything shows, so focus moves on to the first new card.
+  useEffect(() => {
+    if (focusCard.current === null) return;
+    cards.current?.querySelectorAll("button")[focusCard.current]?.focus();
+    focusCard.current = null;
+  }, [visibleCount]);
 
   const hash = useSyncExternalStore(
     subscribeToHash,
@@ -131,7 +140,7 @@ export function Portfolio({ portfolio }: { portfolio: SiteContent["portfolio"] }
       <div className="page-width">
         <SectionHeading id="portfolio-heading" eyebrow={portfolio.eyebrow} title={portfolio.title} />
 
-        <ul className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+        <ul ref={cards} className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
           {projects.slice(0, visibleCount).map((project) => (
             <li key={project.slug}>
               <button
@@ -165,7 +174,10 @@ export function Portfolio({ portfolio }: { portfolio: SiteContent["portfolio"] }
             <button
               type="button"
               className="btn"
-              onClick={() => setVisibleCount((count) => count + portfolio.initialCount)}
+              onClick={() => {
+                focusCard.current = visibleCount;
+                setVisibleCount((count) => count + portfolio.initialCount);
+              }}
             >
               Load more
             </button>
@@ -184,14 +196,17 @@ export function Portfolio({ portfolio }: { portfolio: SiteContent["portfolio"] }
           if (event.target === dialog.current) clearHash();
         }}
       >
-        <button
-          type="button"
-          aria-label="Close"
-          onClick={clearHash}
-          className="neu absolute top-4 right-4 z-10 flex size-11 cursor-pointer items-center justify-center rounded-full text-pink-text"
-        >
-          <X className="size-5" aria-hidden />
-        </button>
+        {/* Takes up no height, and stays in view while a long project scrolls on a phone. */}
+        <div className="sticky top-4 z-10 flex h-0 justify-end pr-4">
+          <button
+            type="button"
+            aria-label="Close"
+            onClick={clearHash}
+            className="neu flex size-11 shrink-0 cursor-pointer items-center justify-center rounded-full text-pink-text"
+          >
+            <X className="size-5" aria-hidden />
+          </button>
+        </div>
         {active && <ProjectDetail key={active.slug} project={active} />}
       </dialog>
     </section>
