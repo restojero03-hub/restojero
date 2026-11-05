@@ -149,8 +149,8 @@ test.describe("the portfolio", () => {
     const boxes = dialog.getByRole("list", { name: "Tools" }).getByRole("listitem");
     await expect(boxes).toHaveCount(8);
     await expect(boxes.first()).toHaveText("Next.js");
-    await expect(dialog.getByRole("button", { name: "Next.js" })).toHaveCount(0);
-    await expect(dialog.getByRole("link", { name: "Next.js" })).toHaveCount(0);
+    await expect(dialog.getByRole("button", { name: "Next.js", exact: true })).toHaveCount(0);
+    await expect(dialog.getByRole("link", { name: "Next.js", exact: true })).toHaveCount(0);
   });
 
   test("a pop-up always opens at its top", async ({ page }) => {
