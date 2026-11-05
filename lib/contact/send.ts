@@ -86,25 +86,25 @@ export async function handleContact(form: FormData, deps: ContactDeps): Promise<
   }
 
   const { name, email, message } = parsed.data;
-  let delivered = false;
-  let limitChecked = false;
+  let saved = false;
+  let emailed = false;
 
   if (inbox) {
     try {
       if ((await inbox.countRecent()) >= HOURLY_LIMIT) {
         return { status: "error", message: TOO_MANY_MESSAGES, values };
       }
-      limitChecked = true;
       await inbox.save({ name, email, body: message });
-      delivered = true;
+      saved = true;
     } catch (error) {
       console.error("Saving a contact message failed", error);
     }
   }
 
-  // Email always needs something limiting it. With the database down and no spam check,
-  // nothing is, so a script could otherwise fill the mailbox.
-  if (isEmailConfigured(env) && (limitChecked || isSpamCheckConfigured(env))) {
+  // Email always needs something limiting it. The hourly limit counts saved messages, so one
+  // that wasn't saved isn't limited by it. Without a spam check, that message gets no email,
+  // or a script could fill the mailbox.
+  if (isEmailConfigured(env) && (saved || isSpamCheckConfigured(env))) {
     try {
       await deps.send({
         from: `Portfolio contact form <${env.RESEND_FROM_EMAIL}>`,
@@ -113,13 +113,13 @@ export async function handleContact(form: FormData, deps: ContactDeps): Promise<
         subject: `New message from ${name.replace(/[\r\n]+/g, " ")}`,
         text: `Name: ${name}\nEmail: ${email}\n\n${message}`,
       });
-      delivered = true;
+      emailed = true;
     } catch (error) {
       console.error("Contact form email failed", error);
     }
   }
 
-  return delivered ? { status: "success" } : { status: "error", message: SEND_FAILED, values };
+  return saved || emailed ? { status: "success" } : { status: "error", message: SEND_FAILED, values };
 }
 
 export async function sendWithResend(email: OutgoingEmail): Promise<void> {

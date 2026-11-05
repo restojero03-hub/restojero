@@ -245,6 +245,34 @@ describe("the inbox", () => {
     expect(send).not.toHaveBeenCalled();
   });
 
+  // A message that can't be saved is never counted, so it must not get an email either.
+  test("with no spam check, sends no email if the message can't be saved", async () => {
+    const emailOnly = { RESEND_API_KEY: "k", RESEND_FROM_EMAIL: "a@example.com", CONTACT_TO_EMAIL: "b@example.com" };
+    const { send, deps } = withInbox({ env: { ...emailOnly, ...dbEnv }, failSave: true });
+    const result = await handleContact(form(valid), deps);
+    expect(result.status).toBe("error");
+    expect(send).not.toHaveBeenCalled();
+  });
+
+  // The database refuses a null character, which would otherwise make a message impossible to save.
+  test("invisible control characters are removed, and line breaks stay", async () => {
+    const { save, deps } = withInbox();
+    const result = await handleContact(
+      form({ ...valid, name: "Ana\u0000 Reyes", message: "Line one\nLine\u0000 two has\ttext." }),
+      deps,
+    );
+    expect(result.status).toBe("success");
+    expect(save).toHaveBeenCalledWith({ name: "Ana Reyes", email: valid.email, body: "Line one\nLine two has\ttext." });
+  });
+
+  test("a message of only control characters counts as empty", async () => {
+    const { save, deps } = withInbox();
+    const result = await handleContact(form({ ...valid, message: "\u0000".repeat(20) }), deps);
+    expect(result.status).toBe("error");
+    expect(result.fieldErrors?.message).toBeTruthy();
+    expect(save).not.toHaveBeenCalled();
+  });
+
   test("with the spam check, email still goes out if the database is down", async () => {
     const { sent, deps } = withInbox();
     deps.inbox.countRecent.mockRejectedValue(new Error("database down"));
