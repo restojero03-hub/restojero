@@ -64,6 +64,11 @@ describe("saveSection", () => {
     expect(mocks.revalidatePath).not.toHaveBeenCalled();
   });
 
+  test("says what's wrong in plain words", async () => {
+    const result = await saveSection("about", { ...about, title: "   " });
+    expect(result.status === "invalid" && result.issues[0].message).toBe("This can't be empty");
+  });
+
   test("rejects a section name that doesn't exist", async () => {
     // @ts-expect-error A forged request can send anything.
     const result = await saveSection("__proto__", about);

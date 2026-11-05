@@ -3,7 +3,6 @@ import { z } from "zod";
 // Invisible control characters have no place in a message, and the database refuses a null
 // character outright. Line breaks and tabs stay.
 function removeControlCharacters(value: string): string {
-   
   return value.replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/g, "");
 }
 

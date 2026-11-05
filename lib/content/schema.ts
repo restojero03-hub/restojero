@@ -4,8 +4,8 @@ import { serviceIcons, socialIcons } from "@/lib/content/sections";
 // The shape of everything the site shows. The dashboard edits this document, and
 // every save is checked against this schema, so bad data can't reach the page.
 
-const webUrl = z.url({ protocol: /^https?$/ });
-const text = z.string().trim().min(1);
+const webUrl = z.url({ protocol: /^https?$/, error: "Use a full link starting with https://" });
+const text = z.string().trim().min(1, "This can't be empty");
 // Only files in this site or uploads to its image store, because next/image refuses other hosts
 // and one bad link would break the whole page.
 const imageSrc = z
@@ -53,7 +53,7 @@ const role = z.object({
   title: text,
   employment: text,
   // Short badge such as PH, AU or US. null shows no badge.
-  country: z.string().trim().max(8).nullable(),
+  country: z.string().trim().max(8, "Keep this to 8 characters or fewer").nullable(),
   start: yearMonth,
   // null means the role is current.
   end: yearMonth.nullable(),
@@ -85,13 +85,13 @@ export const siteContentSchema = z.object({
     // Your Cal.com link. null hides booking and points those buttons at the contact section.
     calUrl: webUrl.nullable(),
     // Only the CV PDF uses this. It never appears on a web page.
-    cvEmail: z.email(),
+    cvEmail: z.email("Use a valid email address"),
     socialLinks: z.array(socialLink),
   }),
   hero: z.object({
     visible: z.boolean(),
     eyebrow: text,
-    titles: z.array(text).min(1),
+    titles: z.array(text).min(1, "Add at least one title"),
     intro: text,
     photo: image,
     socialLabel: text,
@@ -99,12 +99,12 @@ export const siteContentSchema = z.object({
     tools: z.array(tool),
   }),
   about: sectionBase.extend({
-    paragraphs: z.array(text).min(1),
+    paragraphs: z.array(text).min(1, "Add at least one paragraph"),
     videoId: z.string().regex(/^[\w-]{6,20}$/, "Use the ID from the YouTube link").nullable(),
   }),
   services: sectionBase.extend({ items: z.array(service) }),
   portfolio: sectionBase.extend({
-    initialCount: z.number().int().min(1).max(30),
+    initialCount: z.number("Use a number from 1 to 30").int("Use a number from 1 to 30").min(1, "Use a number from 1 to 30").max(30, "Use a number from 1 to 30"),
     items: z.array(project).superRefine((items, context) => {
       // The link is how a project is found, so two can't share one.
       const seen = new Set<string>();
