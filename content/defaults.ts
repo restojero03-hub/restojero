@@ -1,8 +1,8 @@
-import type { SiteContent } from "@/lib/content/schema";
+import { siteContentSchema, type SiteContent, type SiteContentInput } from "@/lib/content/schema";
 
 // The starting content. It also fills the site when no database is connected.
 // Once the dashboard is in use, edit content there rather than here.
-export const defaultContent: SiteContent = {
+const starter: SiteContentInput = {
   site: {
     name: "Ronil Estojero",
     nickname: "Engr. Nil",
@@ -555,3 +555,5 @@ export const defaultContent: SiteContent = {
     formNote: "Your message goes straight to my inbox. I only use your details to reply.",
   },
 };
+
+export const defaultContent: SiteContent = siteContentSchema.parse(starter);

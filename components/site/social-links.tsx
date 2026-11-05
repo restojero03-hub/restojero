@@ -1,4 +1,5 @@
 import { Globe } from "lucide-react";
+import { shown } from "@/lib/content/list";
 import type { SiteContent, SocialIcon } from "@/lib/content/schema";
 
 function Icon({ icon }: { icon: SocialIcon }) {
@@ -29,7 +30,7 @@ function Icon({ icon }: { icon: SocialIcon }) {
 export function SocialLinks({ links }: { links: SiteContent["site"]["socialLinks"] }) {
   return (
     <ul className="flex flex-wrap gap-5">
-      {links.map((link) => (
+      {shown(links).map((link) => (
         <li key={link.url}>
           <a
             href={link.url}

@@ -141,7 +141,7 @@ export function ContactForm({ note }: { note: string }) {
       )}
 
       <div>
-        <Button type="submit" size="lg" disabled={pending || (started && !token)} className="min-h-12 w-full px-7">
+        <Button type="submit" size="lg" disabled={pending || Boolean(turnstileSiteKey && started && !token)} className="min-h-12 w-full px-7">
           {pending ? "Sending..." : "Send message"}
         </Button>
         <p className="mt-3 text-sm text-muted-foreground">{note}</p>

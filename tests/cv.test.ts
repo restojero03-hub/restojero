@@ -79,3 +79,20 @@ describe("the CV PDF", () => {
     expect(pageCount).toBeLessThanOrEqual(2);
   });
 });
+
+test("a hidden job stays off the CV", async () => {
+  const roles = resume.roles.map((role, index) => ({ ...role, visible: index !== 0 }));
+  const buffer = await renderCv({ ...defaultContent, resume: { ...resume, roles } });
+  const pdf = await getDocument({
+    data: new Uint8Array(buffer),
+    useSystemFonts: true,
+    disableFontFace: true,
+  }).promise;
+  let hiddenText = "";
+  for (let n = 1; n <= pdf.numPages; n++) {
+    const content = await (await pdf.getPage(n)).getTextContent();
+    hiddenText += content.items.map((item) => ("str" in item ? item.str : "")).join(" ");
+  }
+  expect(hiddenText).not.toContain(resume.roles[0].title);
+  expect(hiddenText).toContain(resume.roles[1].title);
+}, 30_000);

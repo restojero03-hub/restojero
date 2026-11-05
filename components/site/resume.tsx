@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState, type KeyboardEvent } from "react";
+import { shown } from "@/lib/content/list";
 import { SectionHeading } from "@/components/site/section-heading";
 import { formatRange } from "@/lib/format";
 import type { Role, SiteContent } from "@/lib/content/schema";
@@ -108,7 +109,7 @@ export function Resume({ resume }: { resume: SiteContent["resume"] }) {
           <div role="tabpanel" id="panel-experience" aria-labelledby="tab-experience" hidden={active !== "experience"}>
             <h3 className="mb-8 text-3xl font-bold">Job Experience</h3>
             <ol className="grid grid-cols-1 gap-8 lg:grid-cols-2">
-              {[...resume.roles, ...resume.engineering].map((role) => (
+              {shown([...resume.roles, ...resume.engineering]).map((role) => (
                 <RoleItem key={`${role.company}-${role.start}`} role={role} />
               ))}
             </ol>
@@ -117,7 +118,7 @@ export function Resume({ resume }: { resume: SiteContent["resume"] }) {
           <div role="tabpanel" id="panel-education" aria-labelledby="tab-education" hidden={active !== "education"}>
             <h3 className="mb-8 text-3xl font-bold">Education</h3>
             <ol className="grid grid-cols-1 gap-8 lg:grid-cols-2">
-              {resume.education.map((item) => (
+              {shown(resume.education).map((item) => (
                 <TimelineItem key={item.title} title={item.title} subtitle={`${item.school}, ${item.dates}`}>
                   {item.note && <p className="mt-4 border-t pt-4">{item.note}</p>}
                 </TimelineItem>
@@ -127,7 +128,7 @@ export function Resume({ resume }: { resume: SiteContent["resume"] }) {
 
           <div role="tabpanel" id="panel-skills" aria-labelledby="tab-skills" hidden={active !== "skills"}>
             <div className="grid grid-cols-1 gap-x-16 gap-y-12 lg:grid-cols-2">
-              {resume.skillGroups.map((group) => (
+              {shown(resume.skillGroups).map((group) => (
                 <div key={group.name}>
                   <h3 className="text-3xl font-bold">{group.name}</h3>
                   <ul className="mt-6 flex flex-wrap gap-3">

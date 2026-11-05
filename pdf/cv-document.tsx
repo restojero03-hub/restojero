@@ -9,6 +9,7 @@ import {
   View,
 } from "@react-pdf/renderer";
 import type { Role, SiteContent } from "@/lib/content/schema";
+import { shown } from "@/lib/content/list";
 import { formatRange } from "@/lib/format";
 import { getSiteUrl } from "@/lib/site-url";
 
@@ -93,7 +94,7 @@ function CvDocument({ content }: { content: SiteContent }) {
           <Link style={styles.link} src={siteUrl}>
             {siteUrl.replace("https://", "")}
           </Link>
-          {site.socialLinks.map((link) => (
+          {shown(site.socialLinks).map((link) => (
             <Text key={link.url}>
               {" | "}
               <Link style={styles.link} src={link.url}>
@@ -107,17 +108,17 @@ function CvDocument({ content }: { content: SiteContent }) {
         <Text>{resume.summary}</Text>
 
         <Text style={styles.heading}>Experience</Text>
-        {resume.roles.map((role) => (
+        {shown(resume.roles).map((role) => (
           <RoleEntry key={`${role.company}-${role.start}`} role={role} />
         ))}
 
         <Text style={styles.heading}>Engineering background</Text>
-        {resume.engineering.map((role) => (
+        {shown(resume.engineering).map((role) => (
           <RoleEntry key={`${role.company}-${role.start}`} role={role} />
         ))}
 
         <Text style={styles.heading}>Education and certifications</Text>
-        {resume.education.map((item) => (
+        {shown(resume.education).map((item) => (
           <View key={item.title} style={styles.entry} wrap={false}>
             <View style={styles.roleLine}>
               <Text style={styles.roleTitle}>{item.title}</Text>
@@ -131,7 +132,7 @@ function CvDocument({ content }: { content: SiteContent }) {
         ))}
 
         <Text style={styles.heading}>Skills</Text>
-        {resume.skillGroups.map((group) => (
+        {shown(resume.skillGroups).map((group) => (
           <Text key={group.name} style={styles.entry}>
             <Text style={styles.strong}>{group.name}: </Text>
             {group.skills.join(", ")}

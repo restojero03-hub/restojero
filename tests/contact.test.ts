@@ -1,4 +1,4 @@
-import { describe, expect, test, vi } from "vitest";
+import { beforeEach, describe, expect, test, vi } from "vitest";
 import { handleContact, isContactConfigured, type OutgoingEmail } from "@/lib/contact/send";
 
 const env = {
@@ -154,12 +154,92 @@ describe("handleContact", () => {
 });
 
 describe("isContactConfigured", () => {
-  test("is true only when all five settings exist", () => {
+  test("without a database, needs all five email and spam settings", () => {
     expect(isContactConfigured(env)).toBe(true);
     expect(isContactConfigured({})).toBe(false);
     for (const key of Object.keys(env)) {
       expect(isContactConfigured({ ...env, [key]: "" }), key).toBe(false);
       expect(isContactConfigured({ ...env, [key]: undefined }), key).toBe(false);
     }
+  });
+
+  test("with a database, the form works on its own", () => {
+    expect(isContactConfigured({ DATABASE_URL: "postgres://example" })).toBe(true);
+  });
+});
+
+describe("the inbox", () => {
+  const dbEnv = { DATABASE_URL: "postgres://example" };
+
+  function withInbox(
+    overrides: { env?: Record<string, string>; failSave?: boolean; failSend?: boolean; recent?: number } = {},
+  ) {
+    const base = setup({ env: overrides.env ?? { ...env, ...dbEnv }, failSend: overrides.failSend });
+    const save = vi.fn(async () => {
+      if (overrides.failSave) throw new Error("database down");
+    });
+    const countRecent = vi.fn(async () => overrides.recent ?? 0);
+    return { ...base, save, deps: { ...base.deps, inbox: { save, countRecent } } };
+  }
+
+  beforeEach(() => {
+    vi.spyOn(console, "error").mockImplementation(() => {});
+  });
+
+  test("saves the message and emails it", async () => {
+    const { save, sent, deps } = withInbox();
+    const result = await handleContact(form(valid), deps);
+    expect(result.status).toBe("success");
+    expect(save).toHaveBeenCalledWith({ name: valid.name, email: valid.email, body: valid.message });
+    expect(sent).toHaveLength(1);
+  });
+
+  test("a failed email still counts, because the message is saved", async () => {
+    const { save, deps } = withInbox({ failSend: true });
+    const result = await handleContact(form(valid), deps);
+    expect(result.status).toBe("success");
+    expect(save).toHaveBeenCalled();
+  });
+
+  test("a failed save still counts when the email goes out", async () => {
+    const { sent, deps } = withInbox({ failSave: true });
+    const result = await handleContact(form(valid), deps);
+    expect(result.status).toBe("success");
+    expect(sent).toHaveLength(1);
+  });
+
+  test("when both fail, the visitor is told and keeps their text", async () => {
+    const { deps } = withInbox({ failSave: true, failSend: true });
+    const result = await handleContact(form(valid), deps);
+    expect(result.status).toBe("error");
+    expect(result.values?.message).toBe(valid.message);
+  });
+
+  test("works with no email or spam settings, using only the database", async () => {
+    const { save, send, verifyTurnstile, deps } = withInbox({ env: dbEnv });
+    const data = new FormData();
+    for (const [key, value] of Object.entries(valid)) data.set(key, value);
+    const result = await handleContact(data, deps);
+    expect(result.status).toBe("success");
+    expect(save).toHaveBeenCalled();
+    expect(send).not.toHaveBeenCalled();
+    expect(verifyTurnstile).not.toHaveBeenCalled();
+  });
+
+  test("still enforces the spam check when it's set up", async () => {
+    const { save, deps } = withInbox();
+    deps.verifyTurnstile.mockResolvedValue(false);
+    const result = await handleContact(form(valid), deps);
+    expect(result.status).toBe("error");
+    expect(save).not.toHaveBeenCalled();
+  });
+
+  test("a flood of messages hits the hourly limit", async () => {
+    const { save, send, deps } = withInbox({ recent: 30 });
+    const result = await handleContact(form(valid), deps);
+    expect(result.status).toBe("error");
+    expect(result.values?.message).toBe(valid.message);
+    expect(save).not.toHaveBeenCalled();
+    expect(send).not.toHaveBeenCalled();
   });
 });

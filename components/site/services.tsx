@@ -13,6 +13,7 @@ import {
   Users,
   type LucideIcon,
 } from "lucide-react";
+import { shown } from "@/lib/content/list";
 import { SectionHeading } from "@/components/site/section-heading";
 import type { ServiceIcon, SiteContent } from "@/lib/content/schema";
 
@@ -37,7 +38,7 @@ export function Services({ services }: { services: SiteContent["services"] }) {
       <div className="page-width">
         <SectionHeading id="services-heading" eyebrow={services.eyebrow} title={services.title} />
         <ul className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-          {services.items.map((service) => {
+          {shown(services.items).map((service) => {
             const Icon = icons[service.icon];
             return (
               <li key={service.title} className="neu-card hover:-translate-y-1">

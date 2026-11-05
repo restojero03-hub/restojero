@@ -1,4 +1,5 @@
 import type { SiteContent } from "@/lib/content/schema";
+import { shown } from "@/lib/content/list";
 import { getSiteUrl } from "@/lib/site-url";
 
 export function personJsonLd({ site, hero }: Pick<SiteContent, "site" | "hero">) {
@@ -20,7 +21,7 @@ export function personJsonLd({ site, hero }: Pick<SiteContent, "site" | "hero">)
     },
     knowsLanguage: ["English", "Filipino"],
     knowsAbout: ["Full-stack development", "SaaS", "AI features", "Digital marketing", "Sales funnels", "Marketing automation"],
-    sameAs: site.socialLinks.map((link) => link.url),
+    sameAs: shown(site.socialLinks).map((link) => link.url),
   };
 }
 

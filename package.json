@@ -10,9 +10,6 @@
     "typecheck": "next typegen && tsc --noEmit",
     "test": "vitest run",
     "e2e": "playwright test",
-    "cv": "tsx scripts/generate-cv.tsx",
-    "predev": "npm run cv",
-    "prebuild": "npm run cv",
     "postinstall": "prisma generate",
     "db:migrate": "prisma migrate deploy",
     "db:seed": "tsx scripts/seed-content.ts"

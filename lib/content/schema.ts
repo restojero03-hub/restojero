@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { serviceIcons, socialIcons } from "@/lib/content/sections";
 
 // The shape of everything the site shows. The dashboard edits this document, and
 // every save is checked against this schema, so bad data can't reach the page.
@@ -16,24 +17,12 @@ const image = z.object({ src: imageSrc, alt: text });
 
 export const CONTENT_ID = "main";
 
-export const socialIcons = ["linkedin", "upwork", "github", "facebook", "website"] as const;
+export { serviceIcons, socialIcons };
 
-export const serviceIcons = [
-  "code",
-  "rocket",
-  "sparkles",
-  "funnel",
-  "megaphone",
-  "mail",
-  "cart",
-  "search",
-  "plug",
-  "chart",
-  "pen",
-  "users",
-] as const;
+// Older saved content has no show or hide setting on these, so it defaults to showing.
+const visible = z.boolean().default(true);
 
-const socialLink = z.object({ label: text, url: webUrl, icon: z.enum(socialIcons) });
+const socialLink = z.object({ label: text, url: webUrl, icon: z.enum(socialIcons), visible });
 
 const tool = z.object({
   name: text,
@@ -41,9 +30,10 @@ const tool = z.object({
   icon: imageSrc.nullable(),
   // For black logos that would disappear on the dark background.
   invertInDark: z.boolean(),
+  visible,
 });
 
-const service = z.object({ title: text, body: text, icon: z.enum(serviceIcons) });
+const service = z.object({ title: text, body: text, icon: z.enum(serviceIcons), visible });
 
 const project = z.object({
   slug: z.string().regex(/^[a-z0-9]+(-[a-z0-9]+)*$/, "Use lowercase words joined by hyphens"),
@@ -68,6 +58,7 @@ const role = z.object({
   // null means the role is current.
   end: yearMonth.nullable(),
   bullets: z.array(text),
+  visible,
 });
 
 const education = z.object({
@@ -75,9 +66,10 @@ const education = z.object({
   school: text,
   dates: text,
   note: z.string().trim().nullable(),
+  visible,
 });
 
-const skillGroup = z.object({ name: text, skills: z.array(text) });
+const skillGroup = z.object({ name: text, skills: z.array(text), visible });
 
 const sectionBase = z.object({ visible: z.boolean(), eyebrow: text, title: text });
 
@@ -113,7 +105,16 @@ export const siteContentSchema = z.object({
   services: sectionBase.extend({ items: z.array(service) }),
   portfolio: sectionBase.extend({
     initialCount: z.number().int().min(1).max(30),
-    items: z.array(project),
+    items: z.array(project).superRefine((items, context) => {
+      // The link is how a project is found, so two can't share one.
+      const seen = new Set<string>();
+      items.forEach((item, index) => {
+        if (seen.has(item.slug)) {
+          context.addIssue({ code: "custom", message: "Another project already uses this link", path: [index, "slug"] });
+        }
+        seen.add(item.slug);
+      });
+    }),
   }),
   resume: sectionBase.extend({
     // The headline and summary at the top of the CV PDF.
@@ -135,6 +136,7 @@ export const siteContentSchema = z.object({
 });
 
 export type SiteContent = z.infer<typeof siteContentSchema>;
+export type SiteContentInput = z.input<typeof siteContentSchema>;
 export type SocialIcon = (typeof socialIcons)[number];
 export type ServiceIcon = (typeof serviceIcons)[number];
 export type Tool = z.infer<typeof tool>;

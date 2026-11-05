@@ -1,4 +1,5 @@
 import { currentUser } from "@clerk/nextjs/server";
+import { cache } from "react";
 
 export type Admin = { id: string; email: string };
 
@@ -21,7 +22,7 @@ function adminEmails(): Set<string> {
 
 // The signed-in user if they're allowed into the dashboard, otherwise null. Only verified
 // addresses count, so nobody gets in by typing the owner's email into a new account.
-export async function getAdmin(): Promise<Admin | null> {
+export const getAdmin = cache(async (): Promise<Admin | null> => {
   const user = await currentUser();
   if (!user) return null;
 
@@ -32,7 +33,7 @@ export async function getAdmin(): Promise<Admin | null> {
     .find((email) => allowed.has(email));
 
   return match ? { id: user.id, email: match } : null;
-}
+});
 
 // Every dashboard read and write calls this, as close to the data as possible.
 export async function requireAdmin(): Promise<Admin> {
