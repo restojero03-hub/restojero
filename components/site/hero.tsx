@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 
 function ToolTile({ tool }: { tool: Tool }) {
   return (
-    <li className="tile" title={tool.name}>
+    <li className="tile" data-tip={tool.name}>
       {tool.icon ? (
         // eslint-disable-next-line @next/next/no-img-element
         <img

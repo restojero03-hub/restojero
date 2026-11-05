@@ -203,6 +203,43 @@
     box-shadow: var(--neu-shadow-soft);
   }
 
+  /* The icon's name on hover or keyboard focus. The label only exists while it shows,
+     so it can't make the page wider on a phone when it's not in use. */
+  .tile[data-tip] {
+    position: relative;
+  }
+  .tile[data-tip]:hover,
+  .tile[data-tip]:focus-visible {
+    z-index: 20;
+  }
+  .tile[data-tip]:hover::after,
+  .tile[data-tip]:focus-visible::after {
+    content: attr(data-tip);
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 50%;
+    width: max-content;
+    max-width: 160px;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 1.3;
+    text-align: center;
+    pointer-events: none;
+    color: var(--primary-foreground);
+    background: var(--primary);
+    box-shadow: 0 4px 12px rgb(0 0 0 / 0.25);
+    transform: translateX(-50%);
+    animation: tile-tip-in 120ms ease-out;
+  }
+  @keyframes tile-tip-in {
+    from {
+      opacity: 0;
+      transform: translate(-50%, 4px);
+    }
+  }
+
   .tile img {
     @apply size-7 object-contain;
   }

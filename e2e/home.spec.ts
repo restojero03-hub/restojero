@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, test, type Locator } from "@playwright/test";
 import { PHONE_PATTERN } from "../tests/helpers/private-terms";
 
 test.describe("the page", () => {
@@ -28,6 +28,29 @@ test.describe("the page", () => {
     expect(html).not.toContain("restojero@gmail.com");
     expect(html).not.toContain("tel:");
     expect(await page.locator("body").innerText()).not.toMatch(PHONE_PATTERN);
+  });
+
+  test("an icon shows its name on hover, and a link on keyboard focus too", async ({ page }) => {
+    await page.goto("/");
+    const label = (tile: Locator) => tile.evaluate((element) => getComputedStyle(element, "::after").content);
+
+    const social = page.locator("#home").getByRole("link", { name: "LinkedIn" });
+    expect(await label(social)).toBe("none");
+    await social.focus();
+    expect(await label(social)).toBe('"LinkedIn"');
+    await social.blur();
+
+    await social.hover();
+    expect(await label(social)).toBe('"LinkedIn"');
+
+    const tool = page.locator("#home li.tile").filter({ has: page.getByRole("img", { name: "Claude", exact: true }) });
+    expect(await label(tool)).toBe("none");
+    await tool.hover();
+    expect(await label(tool)).toBe('"Claude"');
+
+    const initials = page.locator("#home li.tile").filter({ has: page.getByRole("img", { name: "FunnelKit" }) });
+    await initials.hover();
+    expect(await label(initials)).toBe('"FunnelKit"');
   });
 
   test("has no percent bars or like counts", async ({ page }) => {
@@ -222,6 +245,14 @@ for (const width of [320, 375]) {
     test("the page doesn't scroll sideways", async ({ page }) => {
       await page.goto("/");
       await noSideScroll(page);
+    });
+
+    test("an icon's name doesn't push the page wider", async ({ page }) => {
+      await page.goto("/");
+      for (const tile of await page.locator("#home .tile").all()) {
+        await tile.hover();
+        await noSideScroll(page);
+      }
     });
 
     test("the pop-up fits", async ({ page }) => {

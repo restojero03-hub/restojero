@@ -36,7 +36,7 @@ export function SocialLinks({ links }: { links: SiteContent["site"]["socialLinks
             target="_blank"
             rel="noopener noreferrer"
             aria-label={link.label}
-            title={link.label}
+            data-tip={link.label}
             className="tile"
           >
             <Icon icon={link.icon} />
