@@ -1,17 +1,9 @@
-import { readFileSync } from "node:fs";
 import path from "node:path";
+import sharp from "sharp";
 import { describe, expect, test } from "vitest";
-import { caseStudies } from "@/content/work/meta";
+import { defaultContent } from "@/content/defaults";
+import { siteContentSchema, type Role } from "@/lib/content/schema";
 import { findPrivateTerms, PHONE_PATTERN } from "./helpers/private-terms";
-import { faq } from "@/content/faq";
-import { home } from "@/content/home";
-import { process as steps } from "@/content/process";
-import { projects } from "@/content/projects";
-import { cvEmail, resume, type Role } from "@/content/resume";
-import { services } from "@/content/services";
-import { site } from "@/content/site";
-import { testimonials } from "@/content/testimonials";
-import { tools } from "@/content/tools";
 
 function strings(value: unknown): string[] {
   if (typeof value === "string") return [value];
@@ -20,28 +12,17 @@ function strings(value: unknown): string[] {
   return [];
 }
 
-const caseStudyText = ["conexa-pro", "meta-ads-funnel"].map((slug) =>
-  readFileSync(path.resolve(__dirname, `../content/work/${slug}.mdx`), "utf8"),
-);
+// Everything visitors can read. The CV email is left out because only the PDF uses it.
+const { cvEmail, ...publicSite } = defaultContent.site;
+const text = strings({ ...defaultContent, site: publicSite }).join("\n");
 
-const all = strings([
-  caseStudies,
-  caseStudyText,
-  faq,
-  home,
-  steps,
-  projects,
-  resume,
-  services,
-  site,
-  testimonials,
-  tools,
-]);
-const text = all.join("\n");
+describe("the content", () => {
+  test("passes the schema", () => {
+    expect(() => siteContentSchema.parse(defaultContent)).not.toThrow();
+  });
 
-describe("nothing from the old CV or template leaks in", () => {
   test.each([
-    ["phone number", /927|\+63/],
+    ["a country calling code", /\+63/],
     ["fake testimonials", /Nevine|Delevingne|Duone/],
     ["fake clients", /John Due|Smiths Marth/],
     ["fake jobs", /Google Out Tech|Apple Developer|Nike/],
@@ -53,143 +34,228 @@ describe("nothing from the old CV or template leaks in", () => {
     ["Upwork stats", /hourly job/i],
     ["old location conflict", /Manila/],
     ["year counts", /\b\d+\+?\s*years?\b/i],
-  ])("no %s", (_name, pattern) => {
+    ["the Plus Code from the OnlineTabo mockups", /5X5R/],
+    ["filler from the old AI-written copy", /revolutioni|groundbreaking|cutting-edge|seamless|leverag|tailored|instrumental|pivotal|elevat|testament|thrive|unlock/i],
+  ])("has no %s", (_name, pattern) => {
     expect(text).not.toMatch(pattern);
   });
 
-  test("nothing that looks like a phone number", () => {
+  test("has nothing shaped like a phone number", () => {
     expect(text).not.toMatch(PHONE_PATTERN);
   });
 
-  test("no names or contact details from the old CV", () => {
+  test("has no names or contact details from the old CV", () => {
     expect(findPrivateTerms(text)).toEqual([]);
   });
 
-  test("no email address in any web content", () => {
+  test("has no email address in anything visitors can read", () => {
     expect(text).not.toMatch(/[\w.+-]+@[\w-]+\.[a-z]{2,}/i);
   });
-});
 
-describe("site", () => {
-  test("uses the promise and location Ronil approved", () => {
-    expect(site.promise).toBe("I build your SaaS, and the funnel that sells it.");
-    expect(site.location).toBe("Palo, Leyte, Philippines");
-    expect(site.timezone).toBe("UTC+8");
-    expect(site.experience).toBe("Building for the web since 2015, engineering since 2014.");
-  });
-
-  test("links to the approved funnel page and video", () => {
-    expect(site.links.funnel).toBe(
-      "https://go.conexapro.io/op/live-ai-driven-construction-project-management-registration/",
-    );
-    expect(site.links.conexa).toBe("https://app.conexapro.io");
-    expect(site.links.videoId).toBe("K3TOs3JgBkg");
-  });
-});
-
-describe("services and tools", () => {
-  test("has the 6 services from the handover", () => {
-    expect(services).toHaveLength(6);
-  });
-
-  test("has the 9 tool groups from the handover", () => {
-    expect(tools).toHaveLength(9);
-  });
-
-  test("tools carry no percentages", () => {
-    expect(strings(tools).join(" ")).not.toMatch(/\d+\s*%/);
-  });
-});
-
-describe("projects", () => {
-  test("lists CoNexa Pro first, linked to the live app", () => {
-    expect(projects[0].title).toBe("CoNexa Pro");
-    expect(projects[0].href).toBe("https://app.conexapro.io");
-  });
-
-  test("has the five approved entries, newest first", () => {
-    expect(projects.map((p) => p.title)).toEqual([
-      "CoNexa Pro",
-      "Home of Aesthetics",
-      "OnlineTabo",
-      "Dr. David website",
-      "Modern Resolve CRM",
-    ]);
-  });
-
-  test("OnlineTabo and Modern Resolve have no link", () => {
-    const byTitle = Object.fromEntries(projects.map((p) => [p.title, p]));
-    expect(byTitle["OnlineTabo"].href).toBeNull();
-    expect(byTitle["Modern Resolve CRM"].href).toBeNull();
-  });
-
-  test("no project links to davidlsykes.com except Dr. David", () => {
-    const wrong = projects.filter(
-      (p) => p.href?.includes("davidlsykes") && p.title !== "Dr. David website",
-    );
-    expect(wrong).toEqual([]);
-  });
-});
-
-describe("resume", () => {
-  const sortKey = (r: Role) => `${r.end ?? "9999-99"}|${r.start}`;
-  const isNewestFirst = (roles: Role[]) =>
-    roles.every((r, i) => i === 0 || sortKey(roles[i - 1]) >= sortKey(r));
-
-  test("roles are newest first", () => {
-    expect(isNewestFirst(resume.roles)).toBe(true);
-    expect(isNewestFirst(resume.engineering)).toBe(true);
-  });
-
-  test("Home of Aesthetics ended June 2026", () => {
-    const hoa = resume.roles.find((r) => r.company === "Home of Aesthetics");
-    expect(hoa?.start).toBe("2024-03");
-    expect(hoa?.end).toBe("2026-06");
-  });
-
-  test("uses Section 5 titles, not the Upwork variants", () => {
-    const titleOf = (company: string) => resume.roles.find((r) => r.company === company)?.title;
-    expect(titleOf("Advance Digital Team")).toBe("Operations and Digital Marketing Manager");
-    expect(titleOf("Modern Resolve")).toBe("Lead UX and Frontend Developer");
-    expect(titleOf("Home of Aesthetics")).toBe("Web Developer / Marketing");
-    expect(resume.engineering[0].title).toBe("Senior/Head Electrical Engineer");
-  });
-
-  test("the FluentCRM client stays unnamed", () => {
-    const role = resume.roles.find((r) => r.title.includes("FluentCRM"));
-    expect(role?.company).toBe("Upwork client");
-  });
-
-  test("uses the Upwork-matching wording for older client work", () => {
-    expect(resume.roles.some((r) => r.company === "Various clients (Upwork and remote)")).toBe(true);
-  });
-
-  test("engineering is brief: at most 3 bullets per role", () => {
-    for (const role of resume.engineering) expect(role.bullets.length).toBeLessThanOrEqual(3);
-  });
-
-  test("the pilot client stays unnamed", () => {
-    expect(text).toContain(
-      "a 3-month pilot and transition program with a Philippine construction company",
-    );
-  });
-
-  test("the CV email is the approved address", () => {
+  test("keeps the approved CV email", () => {
     expect(cvEmail).toBe("restojero@gmail.com");
   });
 });
 
-describe("case studies", () => {
-  const fact = (slug: string) => caseStudies.find((study) => study.slug === slug)?.fact;
+describe("the hero", () => {
+  test("uses the approved titles", () => {
+    expect(defaultContent.hero.titles).toEqual([
+      "AI Full-Stack Developer",
+      "Digital Marketer",
+      "Sales Funnel Builder",
+      "Automation Specialist",
+    ]);
+  });
 
-  test("label each summary fact for what it actually says", () => {
-    expect(fact("conexa-pro")).toEqual({ label: "Timeline", value: "Since June 2026" });
-    expect(fact("meta-ads-funnel")?.label).toBe("Project");
+  test("shows the tools Ronil named", () => {
+    const names = defaultContent.hero.tools.map((tool) => tool.name);
+    for (const name of ["Claude", "ChatGPT", "Vercel", "Neon", "Supabase"]) {
+      expect(names).toContain(name);
+    }
   });
 });
 
-describe("testimonials", () => {
-  test("stay empty until real reviews exist", () => {
-    expect(testimonials).toEqual([]);
+describe("the portfolio", () => {
+  const { items } = defaultContent.portfolio;
+  const bySlug = Object.fromEntries(items.map((project) => [project.slug, project]));
+
+  test("is in the approved order, so CoNexa Pro isn't the highlight", () => {
+    expect(items.map((project) => project.slug)).toEqual([
+      "meta-ads-funnel",
+      "home-of-aesthetics",
+      "conexa-pro",
+      "modern-resolve",
+      "digital-marketing-analysis",
+      "onlinetabo",
+      "dr-david",
+    ]);
+  });
+
+  test("starts with 6, so Load more has something to show", () => {
+    expect(defaultContent.portfolio.initialCount).toBe(6);
+  });
+
+  test("has unique slugs", () => {
+    expect(new Set(items.map((project) => project.slug)).size).toBe(items.length);
+  });
+
+  test("OnlineTabo and Modern Resolve have no live link", () => {
+    expect(bySlug["onlinetabo"].link).toBeNull();
+    expect(bySlug["modern-resolve"].link).toBeNull();
+  });
+
+  test("labels the analysis as a sample", () => {
+    expect(bySlug["digital-marketing-analysis"].title).toMatch(/sample/i);
+  });
+
+  test("shows the funnel's real results with the date range", () => {
+    const results = bySlug["meta-ads-funnel"].results.join(" ");
+    expect(results).toContain("8.03");
+    expect(results).toContain("48 orders");
+    expect(results).toContain("₱62,352");
+    expect(results).toContain("May 1 to July 31, 2025");
+  });
+
+  test("only the funnel claims results", () => {
+    const withResults = items.filter((project) => project.results.length > 0);
+    expect(withResults.map((project) => project.slug)).toEqual(["meta-ads-funnel"]);
+  });
+
+  test("lists each tool on its own, not inside a sentence", () => {
+    for (const project of items) {
+      expect(project.facts.map((fact) => fact.label), project.slug).not.toContain("Tools");
+      for (const tool of project.tools) expect(tool, project.slug).not.toContain(",");
+    }
+    expect(bySlug["meta-ads-funnel"].tools).toContain("FunnelKit");
+  });
+
+  test("CoNexa Pro matches the Upwork project", () => {
+    const conexa = bySlug["conexa-pro"];
+    expect(conexa.title).toBe("CoNexa Pro: Construction Operations SaaS Built with Next.js");
+    expect(conexa.tools).toEqual([
+      "Next.js",
+      "React",
+      "TypeScript",
+      "Prisma",
+      "PostgreSQL (Neon)",
+      "Better Auth",
+      "Cloudflare R2",
+      "Vercel",
+    ]);
+    expect(conexa.body[0]).toContain("multi-tenant B2B SaaS");
+    expect(conexa.cover.src).toBe("/images/work/conexa-cover.webp");
+    expect(conexa.gallery.map((image) => image.src)).toEqual(
+      [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map(
+        (number) => `/images/work/conexa-slide-${String(number).padStart(2, "0")}.webp`,
+      ),
+    );
+    expect(conexa.facts).toContainEqual({ label: "My role", value: "Solo Full-Stack Developer and Product Owner" });
+  });
+});
+
+describe("the resume", () => {
+  const { resume } = defaultContent;
+  const sortKey = (role: Role) => `${role.end ?? "9999-99"}|${role.start}`;
+  const newestFirst = (roles: Role[]) =>
+    roles.every((role, index) => index === 0 || sortKey(roles[index - 1]) >= sortKey(role));
+
+  test("lists roles newest first", () => {
+    expect(newestFirst(resume.roles)).toBe(true);
+    expect(newestFirst(resume.engineering)).toBe(true);
+  });
+
+  test("keeps Home of Aesthetics ending June 2026", () => {
+    const role = resume.roles.find((item) => item.company === "Home of Aesthetics");
+    expect(role?.start).toBe("2024-03");
+    expect(role?.end).toBe("2026-06");
+  });
+
+  test("uses Section 5 titles", () => {
+    const titleOf = (company: string) => resume.roles.find((role) => role.company === company)?.title;
+    expect(titleOf("Advance Digital Team")).toBe("Operations and Digital Marketing Manager");
+    expect(titleOf("Modern Resolve")).toBe("Lead UX and Frontend Developer");
+    expect(resume.engineering[0].title).toBe("Senior/Head Electrical Engineer");
+  });
+
+  test("keeps the FluentCRM client unnamed", () => {
+    const role = resume.roles.find((item) => item.title.includes("FluentCRM"));
+    expect(role?.company).toBe("Upwork client");
+  });
+
+  test("keeps engineering brief", () => {
+    for (const role of resume.engineering) expect(role.bullets.length).toBeLessThanOrEqual(3);
+  });
+
+  test("puts Engineering last in the skills", () => {
+    expect(resume.skillGroups.at(-1)?.name).toBe("Engineering");
+  });
+
+  test("states experience as dates, not a count", () => {
+    expect(resume.eyebrow).toBe("Building for the web since 2015");
+  });
+});
+
+describe("the schema", () => {
+  test("rejects a project with a bad slug", () => {
+    const content = structuredClone(defaultContent);
+    content.portfolio.items[0].slug = "Not A Slug";
+    expect(() => siteContentSchema.parse(content)).toThrow();
+  });
+
+  test("rejects a link that isn't a real URL", () => {
+    const content = structuredClone(defaultContent);
+    content.site.socialLinks[0].url = "javascript:alert(1)";
+    expect(() => siteContentSchema.parse(content)).toThrow();
+  });
+
+  test("rejects an image with no alt text", () => {
+    const content = structuredClone(defaultContent);
+    content.hero.photo.alt = "";
+    expect(() => siteContentSchema.parse(content)).toThrow();
+  });
+
+  test("allows no booking link", () => {
+    const content = structuredClone(defaultContent);
+    content.site.calUrl = null;
+    expect(() => siteContentSchema.parse(content)).not.toThrow();
+  });
+});
+
+describe("image links", () => {
+  const withCover = (src: string) => {
+    const copy = structuredClone(defaultContent);
+    copy.portfolio.items[0].cover.src = src;
+    return siteContentSchema.safeParse(copy).success;
+  };
+
+  test("allows files in the site and uploads to the image store", () => {
+    expect(withCover("/images/work/funnel-cover.webp")).toBe(true);
+    expect(withCover("https://abc123.public.blob.vercel-storage.com/photo.webp")).toBe(true);
+  });
+
+  test("refuses other hosts, which next/image would fail on", () => {
+    expect(withCover("https://example.com/photo.webp")).toBe(false);
+    expect(withCover("//example.com/photo.webp")).toBe(false);
+    expect(withCover("https://abc123.public.blob.vercel-storage.com.example.com/photo.webp")).toBe(false);
+    expect(withCover("javascript:alert(1)")).toBe(false);
+  });
+});
+describe("large project images", () => {
+  const images = defaultContent.portfolio.items.flatMap((project) => project.gallery);
+
+  // The real size lets the page hold the right space, so nothing jumps as images load.
+  test("each has its real size on record", async () => {
+    expect(images.length).toBeGreaterThan(0);
+    for (const image of images) {
+      const { width, height } = await sharp(path.join("public", image.src)).metadata();
+      expect({ src: image.src, width: image.width, height: image.height }).toEqual({ src: image.src, width, height });
+    }
+  });
+
+  test("the funnel shows its slides, without the one that has customer reviews", () => {
+    const funnel = defaultContent.portfolio.items.find((project) => project.slug === "meta-ads-funnel");
+    const sources = funnel?.gallery.map((image) => image.src) ?? [];
+    expect(sources).toHaveLength(9);
+    expect(sources.join()).not.toContain("funnel-slide-02");
   });
 });

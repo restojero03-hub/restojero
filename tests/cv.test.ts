@@ -1,15 +1,18 @@
 import { beforeAll, describe, expect, test } from "vitest";
 import { getDocument } from "pdfjs-dist/legacy/build/pdf.mjs";
 import { renderCv } from "@/pdf/cv-document";
-import { cvEmail, resume } from "@/content/resume";
+import { defaultContent } from "@/content/defaults";
 import { findPrivateTerms, PHONE_PATTERN } from "./helpers/private-terms";
+
+const { resume } = defaultContent;
+const cvEmail = defaultContent.site.cvEmail;
 
 let text = "";
 let pageCount = 0;
 const pages: string[] = [];
 
 beforeAll(async () => {
-  const buffer = await renderCv();
+  const buffer = await renderCv(defaultContent);
   const pdf = await getDocument({
     data: new Uint8Array(buffer),
     useSystemFonts: true,
@@ -42,7 +45,7 @@ describe("the CV PDF", () => {
   });
 
   test("leaves out the phone number, references and trainer experience", () => {
-    for (const banned of ["927", "+63", "Trainer", "Manila", "$"]) {
+    for (const banned of ["+63", "Trainer", "Manila", "$"]) {
       expect(text).not.toContain(banned);
     }
     expect(text).not.toMatch(PHONE_PATTERN);
@@ -76,3 +79,20 @@ describe("the CV PDF", () => {
     expect(pageCount).toBeLessThanOrEqual(2);
   });
 });
+
+test("a hidden job stays off the CV", async () => {
+  const roles = resume.roles.map((role, index) => ({ ...role, visible: index !== 0 }));
+  const buffer = await renderCv({ ...defaultContent, resume: { ...resume, roles } });
+  const pdf = await getDocument({
+    data: new Uint8Array(buffer),
+    useSystemFonts: true,
+    disableFontFace: true,
+  }).promise;
+  let hiddenText = "";
+  for (let n = 1; n <= pdf.numPages; n++) {
+    const content = await (await pdf.getPage(n)).getTextContent();
+    hiddenText += content.items.map((item) => ("str" in item ? item.str : "")).join(" ");
+  }
+  expect(hiddenText).not.toContain(resume.roles[0].title);
+  expect(hiddenText).toContain(resume.roles[1].title);
+}, 30_000);

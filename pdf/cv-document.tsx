@@ -8,15 +8,14 @@ import {
   Text,
   View,
 } from "@react-pdf/renderer";
-import { cvEmail, resume, type Role } from "@/content/resume";
-import { site } from "@/content/site";
-import { tools } from "@/content/tools";
+import type { Role, SiteContent } from "@/lib/content/schema";
+import { withoutHidden } from "@/lib/content/list";
 import { formatRange } from "@/lib/format";
 import { getSiteUrl } from "@/lib/site-url";
 
-const INK = "#10233f";
-const SOFT = "#46586f";
-const BLUE = "#1d4fd7";
+const INK = "#212428";
+const SOFT = "#565c64";
+const PINK = "#d6003f";
 
 const styles = StyleSheet.create({
   page: {
@@ -26,12 +25,12 @@ const styles = StyleSheet.create({
     fontFamily: "Helvetica",
     fontSize: 9.5,
     lineHeight: 1.4,
-    color: "#1f2933",
+    color: "#2b2f34",
   },
   name: { fontFamily: "Helvetica-Bold", fontSize: 22, color: INK, lineHeight: 1.1 },
   headline: { fontSize: 11, color: INK, marginTop: 3 },
   contact: { fontSize: 9, color: SOFT, marginTop: 5 },
-  link: { color: BLUE, textDecoration: "none" },
+  link: { color: PINK, textDecoration: "none" },
   heading: {
     fontFamily: "Helvetica-Bold",
     fontSize: 11,
@@ -40,7 +39,7 @@ const styles = StyleSheet.create({
     marginBottom: 4,
     paddingBottom: 2,
     borderBottomWidth: 0.75,
-    borderBottomColor: "#9fb0c3",
+    borderBottomColor: "#b4bcc6",
   },
   role: { marginBottom: 5 },
   roleLine: { flexDirection: "row", justifyContent: "space-between" },
@@ -74,33 +73,35 @@ function RoleEntry({ role }: { role: Role }) {
   );
 }
 
-function CvDocument() {
+function CvDocument({ content }: { content: SiteContent }) {
+  const { site, resume } = withoutHidden(content);
   const siteUrl = getSiteUrl();
+
   return (
     <Document
       title={`${site.name} CV`}
       author={site.name}
       subject={resume.headline}
-      keywords="AI full-stack developer, SaaS, Next.js, TypeScript, sales funnels"
+      keywords="AI full-stack developer, digital marketer, sales funnels, Next.js, Meta Ads"
     >
       <Page size="A4" style={styles.page}>
         <Text style={styles.name}>{site.name}</Text>
         <Text style={styles.headline}>{resume.headline}</Text>
         <Text style={styles.contact}>
-          {cvEmail} | {site.location} ({site.timezone})
+          {site.cvEmail} | {site.location} ({site.timezone})
         </Text>
         <Text style={styles.contact}>
           <Link style={styles.link} src={siteUrl}>
             {siteUrl.replace("https://", "")}
           </Link>
-          {" | "}
-          <Link style={styles.link} src={site.links.linkedin}>
-            LinkedIn
-          </Link>
-          {" | "}
-          <Link style={styles.link} src={site.links.upwork}>
-            Upwork profile
-          </Link>
+          {site.socialLinks.map((link) => (
+            <Text key={link.url}>
+              {" | "}
+              <Link style={styles.link} src={link.url}>
+                {link.label}
+              </Link>
+            </Text>
+          ))}
         </Text>
 
         <Text style={styles.heading}>Summary</Text>
@@ -130,11 +131,11 @@ function CvDocument() {
           </View>
         ))}
 
-        <Text style={styles.heading}>Tools</Text>
-        {tools.map((tool) => (
-          <Text key={tool.group} style={styles.entry}>
-            <Text style={styles.strong}>{tool.group}: </Text>
-            {tool.items.join(", ")}
+        <Text style={styles.heading}>Skills</Text>
+        {resume.skillGroups.map((group) => (
+          <Text key={group.name} style={styles.entry}>
+            <Text style={styles.strong}>{group.name}: </Text>
+            {group.skills.join(", ")}
           </Text>
         ))}
 
@@ -147,6 +148,6 @@ function CvDocument() {
   );
 }
 
-export function renderCv(): Promise<Buffer> {
-  return renderToBuffer(<CvDocument />);
+export function renderCv(content: SiteContent): Promise<Buffer> {
+  return renderToBuffer(<CvDocument content={content} />);
 }

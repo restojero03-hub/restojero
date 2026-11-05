@@ -45,7 +45,7 @@ docs/reference/
 assets-inbox/
 
 # generated at build time
-public/ronil-estojero-cv.pdf
+lib/generated/
 test-results/
 playwright-report/
 .superpowers/

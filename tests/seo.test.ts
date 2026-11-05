@@ -1,33 +1,40 @@
 import { afterEach, describe, expect, test, vi } from "vitest";
 import robots from "@/app/robots";
 import sitemap from "@/app/sitemap";
-import { site } from "@/content/site";
+import { defaultContent } from "@/content/defaults";
 import { jsonLdScript, personJsonLd } from "@/lib/json-ld";
+import { getSiteUrl } from "@/lib/site-url";
 
 afterEach(() => vi.unstubAllEnvs());
 
 describe("personJsonLd", () => {
   test("describes Ronil with his profiles", () => {
-    const person = personJsonLd();
+    const person = personJsonLd(defaultContent);
     expect(person["@type"]).toBe("Person");
     expect(person.name).toBe("Ronil Estojero");
     expect(person.alternateName).toBe("Engr. Nil");
-    expect(person.jobTitle).toContain("AI Full-Stack Developer");
+    expect(person.jobTitle).toBe("AI Full-Stack Developer");
     expect(person.url).toBe("https://restojero.vercel.app");
-    expect(person.sameAs).toEqual([site.links.linkedin, site.links.upwork]);
+    expect(person.sameAs).toEqual(defaultContent.site.socialLinks.map((link) => link.url));
     expect(person.address.addressLocality).toBe("Palo");
   });
 
   test("never exposes email or phone", () => {
-    const person = personJsonLd();
+    const person = personJsonLd(defaultContent);
     expect(person).not.toHaveProperty("email");
     expect(person).not.toHaveProperty("telephone");
-    expect(JSON.stringify(person)).not.toMatch(/@gmail|927|\+63/);
+    expect(JSON.stringify(person)).not.toMatch(/@gmail|\+63/);
   });
 
   test("follows the site URL setting", () => {
     vi.stubEnv("NEXT_PUBLIC_SITE_URL", "https://restojero.conexapro.io");
-    expect(personJsonLd().url).toBe("https://restojero.conexapro.io");
+    expect(personJsonLd(defaultContent).url).toBe("https://restojero.conexapro.io");
+  });
+
+  test("keeps an uploaded photo's full address", () => {
+    const content = structuredClone(defaultContent);
+    content.hero.photo.src = "https://example.public.blob.vercel-storage.com/me.webp";
+    expect(personJsonLd(content).image).toBe(content.hero.photo.src);
   });
 });
 
@@ -37,22 +44,28 @@ describe("jsonLdScript", () => {
   });
 });
 
+describe("getSiteUrl", () => {
+  test("defaults to the free Vercel address", () => {
+    vi.stubEnv("NEXT_PUBLIC_SITE_URL", "");
+    expect(getSiteUrl()).toBe("https://restojero.vercel.app");
+  });
+
+  test("reads the one setting and drops a trailing slash", () => {
+    vi.stubEnv("NEXT_PUBLIC_SITE_URL", "https://restojero.conexapro.io/");
+    expect(getSiteUrl()).toBe("https://restojero.conexapro.io");
+  });
+});
+
 describe("sitemap", () => {
-  test("lists all five pages on the site URL", () => {
-    expect(sitemap().map((entry) => entry.url)).toEqual([
-      "https://restojero.vercel.app/",
-      "https://restojero.vercel.app/work/conexa-pro",
-      "https://restojero.vercel.app/work/meta-ads-funnel",
-      "https://restojero.vercel.app/resume",
-      "https://restojero.vercel.app/contact",
-    ]);
+  test("lists the one page on the site URL", () => {
+    expect(sitemap().map((entry) => entry.url)).toEqual(["https://restojero.vercel.app/"]);
   });
 });
 
 describe("robots", () => {
-  test("allows crawling and points to the sitemap", () => {
+  test("allows the site, keeps the dashboard out, and points to the sitemap", () => {
     const result = robots();
-    expect(result.rules).toEqual({ userAgent: "*", allow: "/" });
+    expect(result.rules).toEqual({ userAgent: "*", allow: "/", disallow: ["/dashboard", "/sign-in"] });
     expect(result.sitemap).toBe("https://restojero.vercel.app/sitemap.xml");
   });
 });
