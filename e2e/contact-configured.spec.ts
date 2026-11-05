@@ -18,7 +18,7 @@ test("nothing loads from Cloudflare until someone starts the form", async ({ pag
   page.on("request", (request) => {
     if (request.url().includes("challenges.cloudflare.com")) requests.push(request.url());
   });
-  await page.goto("/contact");
+  await page.goto("/#contacts");
   await page.waitForLoadState("networkidle");
   expect(requests).toEqual([]);
   await page.getByLabel("Your name").focus();
@@ -26,28 +26,15 @@ test("nothing loads from Cloudflare until someone starts the form", async ({ pag
 });
 
 test("send stays off until the spam check passes, then turns on", async ({ page }) => {
-  await page.goto("/contact");
+  await page.goto("/#contacts");
   await page.getByLabel("Your name").focus();
   await expect(send(page)).toBeDisabled();
   await startForm(page);
   await expect(send(page)).toBeEnabled({ timeout: 15_000 });
 });
 
-test("the spam check still appears after moving between pages", async ({ page }) => {
-  await page.goto("/");
-  await page.getByLabel("Your name").focus();
-  await expect(send(page)).toBeEnabled({ timeout: 15_000 });
-
-  // A client-side navigation: the script is already loaded and won't run again.
-  await page.locator("header").getByRole("link", { name: "Let's talk" }).click();
-  await expect(page).toHaveURL(/\/contact$/);
-
-  await startForm(page);
-  await expect(send(page)).toBeEnabled({ timeout: 15_000 });
-});
-
 test("after a failed send the message stays and a retry gets a new check", async ({ page }) => {
-  await page.goto("/contact");
+  await page.goto("/#contacts");
   await startForm(page);
   await expect(send(page)).toBeEnabled({ timeout: 15_000 });
   await send(page).click();

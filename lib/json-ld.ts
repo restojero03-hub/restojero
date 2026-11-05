@@ -1,17 +1,17 @@
-import { site } from "@/content/site";
+import type { SiteContent } from "@/lib/content/schema";
 import { getSiteUrl } from "@/lib/site-url";
 
-export function personJsonLd() {
+export function personJsonLd({ site, hero }: Pick<SiteContent, "site" | "hero">) {
   const url = getSiteUrl();
   return {
     "@context": "https://schema.org",
     "@type": "Person",
     name: site.name,
     alternateName: site.nickname,
-    jobTitle: "AI Full-Stack Developer",
-    description: site.promise,
+    jobTitle: hero.titles[0],
+    description: site.metaDescription,
     url,
-    image: `${url}/images/ronil-estojero.webp`,
+    image: hero.photo.src.startsWith("/") ? `${url}${hero.photo.src}` : hero.photo.src,
     address: {
       "@type": "PostalAddress",
       addressLocality: "Palo",
@@ -19,8 +19,8 @@ export function personJsonLd() {
       addressCountry: "PH",
     },
     knowsLanguage: ["English", "Filipino"],
-    knowsAbout: ["SaaS development", "Next.js", "TypeScript", "AI features", "Sales funnels"],
-    sameAs: [site.links.linkedin, site.links.upwork],
+    knowsAbout: ["Full-stack development", "SaaS", "AI features", "Digital marketing", "Sales funnels", "Marketing automation"],
+    sameAs: site.socialLinks.map((link) => link.url),
   };
 }
 

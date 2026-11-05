@@ -1,15 +1,18 @@
 import { beforeAll, describe, expect, test } from "vitest";
 import { getDocument } from "pdfjs-dist/legacy/build/pdf.mjs";
 import { renderCv } from "@/pdf/cv-document";
-import { cvEmail, resume } from "@/content/resume";
+import { defaultContent } from "@/content/defaults";
 import { findPrivateTerms, PHONE_PATTERN } from "./helpers/private-terms";
+
+const { resume } = defaultContent;
+const cvEmail = defaultContent.site.cvEmail;
 
 let text = "";
 let pageCount = 0;
 const pages: string[] = [];
 
 beforeAll(async () => {
-  const buffer = await renderCv();
+  const buffer = await renderCv(defaultContent);
   const pdf = await getDocument({
     data: new Uint8Array(buffer),
     useSystemFonts: true,

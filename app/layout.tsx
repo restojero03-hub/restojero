@@ -1,73 +1,51 @@
 import { Analytics } from "@vercel/analytics/next";
 import type { Metadata } from "next";
-import { Archivo, IBM_Plex_Mono } from "next/font/google";
-import { SiteFooter } from "@/components/site-footer";
-import { SiteHeader } from "@/components/site-header";
+import { Montserrat, Poppins } from "next/font/google";
 import { ThemeProvider } from "@/components/theme-provider";
-import { site } from "@/content/site";
-import { jsonLdScript, personJsonLd } from "@/lib/json-ld";
+import { getContent } from "@/lib/content/get-content";
 import { getSiteUrl } from "@/lib/site-url";
 import "./globals.css";
 
-const archivo = Archivo({
-  variable: "--font-archivo",
+const montserrat = Montserrat({
+  variable: "--font-montserrat",
   subsets: ["latin"],
-  axes: ["wdth"],
   display: "swap",
 });
 
-const plexMono = IBM_Plex_Mono({
-  variable: "--font-plex-mono",
+const poppins = Poppins({
+  variable: "--font-poppins",
   subsets: ["latin"],
-  weight: "400",
+  weight: ["400", "500", "600"],
   display: "swap",
-  // Small labels only, so it doesn't need to compete with the hero image.
-  preload: false,
 });
 
-const defaultTitle = `${site.name} | AI Full-Stack Developer, SaaS & Sales Funnels`;
-const description = `${site.promise} ${site.audience}`;
-
-export const metadata: Metadata = {
-  metadataBase: new URL(getSiteUrl()),
-  title: { default: defaultTitle, template: `%s | ${site.name}` },
-  description,
-  authors: [{ name: site.name }],
-  openGraph: {
-    type: "website",
-    siteName: site.name,
-    title: defaultTitle,
-    description,
-    url: "/",
-  },
-  twitter: { card: "summary_large_image", title: defaultTitle, description },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const { site } = await getContent();
+  return {
+    metadataBase: new URL(getSiteUrl()),
+    title: { default: site.metaTitle, template: `%s | ${site.name}` },
+    description: site.metaDescription,
+    authors: [{ name: site.name }],
+    openGraph: {
+      type: "website",
+      siteName: site.name,
+      title: site.metaTitle,
+      description: site.metaDescription,
+      url: "/",
+    },
+    twitter: { card: "summary_large_image", title: site.metaTitle, description: site.metaDescription },
+  };
+}
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${archivo.variable} ${plexMono.variable} antialiased`}
+      className={`${montserrat.variable} ${poppins.variable} antialiased`}
       suppressHydrationWarning
     >
       <body className="flex min-h-dvh flex-col">
-        <ThemeProvider>
-          <a
-            href="#main"
-            className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:bg-card focus:p-2"
-          >
-            Skip to content
-          </a>
-          <SiteHeader />
-          <main id="main" className="flex-1">
-            {children}
-          </main>
-          <SiteFooter />
-        </ThemeProvider>
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: jsonLdScript(personJsonLd()) }}
-        />
+        <ThemeProvider>{children}</ThemeProvider>
         <Analytics />
       </body>
     </html>

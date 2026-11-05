@@ -1,8 +1,6 @@
-import createMDX from "@next/mdx";
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  pageExtensions: ["js", "jsx", "md", "mdx", "ts", "tsx"],
   images: { formats: ["image/avif", "image/webp"] },
   turbopack: {
     rules: {
@@ -12,6 +10,14 @@ const nextConfig: NextConfig = {
       },
     },
   },
+  // Links from the previous version of the site keep working.
+  async redirects() {
+    return [
+      { source: "/work/:slug", destination: "/#project-:slug", permanent: false },
+      { source: "/resume", destination: "/#resume", permanent: false },
+      { source: "/contact", destination: "/#contacts", permanent: false },
+    ];
+  },
 };
 
-export default createMDX({})(nextConfig);
+export default nextConfig;

@@ -1,0 +1,557 @@
+import type { SiteContent } from "@/lib/content/schema";
+
+// The starting content. It also fills the site when no database is connected.
+// Once the dashboard is in use, edit content there rather than here.
+export const defaultContent: SiteContent = {
+  site: {
+    name: "Ronil Estojero",
+    nickname: "Engr. Nil",
+    logoText: "NIL",
+    metaTitle: "Ronil Estojero | Full-Stack Developer, Digital Marketer and Funnel Builder",
+    metaDescription:
+      "Freelance AI full-stack developer and digital marketer. I build web apps and SaaS products, then the funnels, ads and automation that bring in customers.",
+    location: "Palo, Leyte, Philippines",
+    timezone: "UTC+8",
+    calUrl: "https://cal.com/restojero/30min",
+    cvEmail: "restojero@gmail.com",
+    socialLinks: [
+      { label: "LinkedIn", url: "https://www.linkedin.com/in/ronil-estojero-92620ab1/", icon: "linkedin" },
+      { label: "Upwork", url: "https://www.upwork.com/freelancers/~01750fd8173e8c9744", icon: "upwork" },
+      { label: "GitHub", url: "https://github.com/restojero03-hub", icon: "github" },
+    ],
+  },
+
+  hero: {
+    visible: true,
+    eyebrow: "For founders, agencies and business owners",
+    titles: [
+      "AI Full-Stack Developer",
+      "Digital Marketer",
+      "Sales Funnel Builder",
+      "Automation Specialist",
+    ],
+    intro:
+      "I build web apps and SaaS products, then the funnels, ads and automation that bring in customers. One freelancer for the product and the marketing, so nothing gets lost between two teams.",
+    photo: { src: "/images/ronil-estojero.webp", alt: "Ronil Estojero in a dark blazer" },
+    socialLabel: "Find with me",
+    toolsLabel: "Best skill on",
+    tools: [
+      { name: "Claude", icon: "/icons/tools/claude.svg", invertInDark: false },
+      { name: "ChatGPT", icon: "/icons/tools/chatgpt.webp", invertInDark: false },
+      { name: "Vercel", icon: "/icons/tools/vercel.svg", invertInDark: true },
+      { name: "Neon", icon: "/icons/tools/neon.svg", invertInDark: false },
+      { name: "Supabase", icon: "/icons/tools/supabase.svg", invertInDark: false },
+      { name: "Next.js", icon: "/icons/tools/nextdotjs.svg", invertInDark: true },
+      { name: "React", icon: "/icons/tools/react.svg", invertInDark: false },
+      { name: "TypeScript", icon: "/icons/tools/typescript.svg", invertInDark: false },
+      { name: "PostgreSQL", icon: "/icons/tools/postgresql.svg", invertInDark: false },
+      { name: "Tailwind CSS", icon: "/icons/tools/tailwindcss.svg", invertInDark: false },
+      { name: "WordPress", icon: "/icons/tools/wordpress.svg", invertInDark: true },
+      { name: "Meta Ads", icon: "/icons/tools/meta.svg", invertInDark: false },
+      { name: "Zapier", icon: "/icons/tools/zapier.svg", invertInDark: false },
+      { name: "n8n", icon: "/icons/tools/n8n.svg", invertInDark: false },
+      { name: "FunnelKit", icon: null, invertInDark: false },
+      { name: "FluentCRM", icon: "/icons/tools/fluentcrm.webp", invertInDark: false },
+    ],
+  },
+
+  about: {
+    visible: true,
+    eyebrow: "About me",
+    title: "Know Me Better",
+    paragraphs: [
+      "I'm a freelance full-stack developer and digital marketer based in the Philippines. I've been building for the web since 2015, for clients in Australia, the US and the Philippines.",
+      "Most projects need two things: software that works, and a way to get customers to it. I do both: Next.js apps with logins, billing and AI features, plus Meta Ads, sales funnels and email and SMS follow-ups.",
+      "I started out as a licensed electrical engineer, which is where I learned to plan carefully and deliver on budget.",
+    ],
+    videoId: "K3TOs3JgBkg",
+  },
+
+  services: {
+    visible: true,
+    eyebrow: "Services offered",
+    title: "What I Do",
+    items: [
+      {
+        title: "Full-Stack Web Apps",
+        body: "Custom web apps built with Next.js, React, TypeScript and PostgreSQL, from the first login screen to the live release.",
+        icon: "code",
+      },
+      {
+        title: "SaaS MVP to Production",
+        body: "Accounts, teams, roles, subscription plans and payments, so your product is ready for paying customers.",
+        icon: "rocket",
+      },
+      {
+        title: "AI Features and Automation",
+        body: "Summaries, report drafting and Q&A over your app's data, built so AI only sees what each user is allowed to see.",
+        icon: "sparkles",
+      },
+      {
+        title: "Sales Funnels",
+        body: "Landing pages and 3-page funnels that take a visitor from the first click to checkout.",
+        icon: "funnel",
+      },
+      {
+        title: "Meta Ads Management",
+        body: "Facebook and Instagram campaigns planned, launched and improved around leads and sales.",
+        icon: "megaphone",
+      },
+      {
+        title: "Email and SMS Automation",
+        body: "Follow-ups that send themselves, set up in FluentCRM, FunnelKit, Klaviyo or ActiveCampaign.",
+        icon: "mail",
+      },
+      {
+        title: "WordPress and E-commerce",
+        body: "WordPress, WooCommerce and Shopify stores, including multivendor marketplaces.",
+        icon: "cart",
+      },
+      {
+        title: "SEO and Analytics",
+        body: "On-page SEO and tracking with Meta Pixel and Google Analytics, so you can see what brings in customers.",
+        icon: "search",
+      },
+      {
+        title: "Integrations",
+        body: "APIs, webhooks, CRMs and payment gateways connected with Zapier and n8n, so your tools work as one system.",
+        icon: "plug",
+      },
+    ],
+  },
+
+  portfolio: {
+    visible: true,
+    eyebrow: "Recent projects",
+    title: "My Portfolio",
+    initialCount: 6,
+    items: [
+      {
+        slug: "meta-ads-funnel",
+        title: "Meta Ads and 3-Page Sales Funnel for an Online Course",
+        tags: ["Funnel", "Paid Ads", "Automation"],
+        cover: {
+          src: "/images/work/funnel-cover.webp",
+          alt: "Digital marketing case study cover, with a portrait of Ronil Estojero",
+        },
+        gallery: [
+          {
+            src: "/images/work/funnel-results.webp",
+            alt: "Results slide with Meta Ads purchase ROAS, and funnel visitors, orders and revenue",
+          },
+          {
+            src: "/images/work/funnel-ads.webp",
+            alt: "Three Meta ads for the course, on Instagram and Facebook",
+          },
+          {
+            src: "/images/work/funnel-landing.webp",
+            alt: "The funnel's landing page, with a headline and a register button",
+          },
+          {
+            src: "/images/work/funnel-automations.webp",
+            alt: "A list of the funnel's automations, including an opt-in follow-up and a payment follow-up",
+          },
+        ],
+        facts: [
+          { label: "Industry", value: "Construction and engineering education" },
+          { label: "Business", value: "My own online course" },
+          { label: "Traffic", value: "Meta Ads on Facebook and Instagram" },
+          { label: "Funnel", value: "3 pages, with email automation" },
+          { label: "Payments", value: "Online checkout and bank transfer" },
+          { label: "My role", value: "Funnel builder, email and SMS automation, Meta Ads campaign manager" },
+          { label: "Tools", value: "Meta Ads Manager, WordPress, FunnelKit, Meta Pixel, Google Analytics" },
+        ],
+        body: [
+          "I built and ran this funnel for my own online course, so I can show the whole system. Client work stays confidential.",
+          "Ads send people to a landing page, then to checkout, then to a thank-you page with clear next steps. Automated emails confirm sign-ups, follow up with bank transfer buyers and send onboarding details, so offline payments need no manual chasing.",
+        ],
+        results: [
+          "Purchase ROAS of 6.77, 5.88 and 8.03 in Meta Ads reporting",
+          "3,234 visitors, 407 contacts and 48 orders from May 1 to July 31, 2025",
+          "₱62,352 in revenue over the same period",
+        ],
+        link: {
+          label: "See the live registration page",
+          url: "https://go.conexapro.io/op/live-ai-driven-construction-project-management-registration/",
+        },
+        visible: true,
+      },
+      {
+        slug: "home-of-aesthetics",
+        title: "Home of Aesthetics Multivendor Marketplace",
+        tags: ["E-commerce", "Web Development"],
+        cover: {
+          src: "/images/work/home-of-aesthetics.webp",
+          alt: "Home of Aesthetics marketplace shop page with product filters and skincare listings",
+        },
+        gallery: [],
+        facts: [
+          { label: "Client", value: "Home of Aesthetics, Australia" },
+          { label: "Date", value: "February 2024" },
+          { label: "My role", value: "Team contributor on design, development and launch" },
+          { label: "Tools", value: "WordPress, WooCommerce, Dokan" },
+        ],
+        body: [
+          "An Australian B2B marketplace where salon and clinic owners can research and compare beauty products and services from many vendors in one place.",
+        ],
+        results: [],
+        link: { label: "Visit the site", url: "https://homeofaesthetics.com.au" },
+        visible: true,
+      },
+      {
+        slug: "conexa-pro",
+        title: "CoNexa Pro Construction SaaS",
+        tags: ["SaaS", "Web App", "AI"],
+        cover: {
+          src: "/images/conexa/boq.png",
+          alt: "CoNexa Pro Bill of Quantities screen for a demo project",
+        },
+        gallery: [
+          {
+            src: "/images/conexa/schedule.png",
+            alt: "CoNexa Pro schedule screen with work breakdown and progress, for a demo project",
+          },
+          {
+            src: "/images/conexa/daily-report.png",
+            alt: "CoNexa Pro daily site report for a demo project",
+          },
+          {
+            src: "/images/conexa/cost-tracking.png",
+            alt: "CoNexa Pro cost tracking overview for a demo project",
+          },
+        ],
+        facts: [
+          { label: "Type", value: "Multi-tenant SaaS for construction companies" },
+          { label: "Since", value: "June 2026" },
+          { label: "My role", value: "Solo full-stack developer, using AI-assisted engineering with Claude Code" },
+          { label: "Tools", value: "Next.js, TypeScript, PostgreSQL on Neon, Prisma, Better Auth, Xendit, Vercel" },
+        ],
+        body: [
+          "A platform that brings estimating, Gantt scheduling, procurement, inventory, daily site reports and cost tracking into one place, with an AI assistant and paid subscriptions.",
+          "Each company gets its own workspace, with 6 roles and permission checks on every API call. The AI only sees what the person asking is allowed to see, and it never gets direct database access.",
+          "It's in real-world use through a 3-month pilot and transition program with a Philippine construction company.",
+        ],
+        results: [],
+        link: { label: "See it live", url: "https://app.conexapro.io" },
+        visible: true,
+      },
+      {
+        slug: "modern-resolve",
+        title: "Modern Resolve CRM Application",
+        tags: ["Web App", "UI/UX Design"],
+        cover: {
+          src: "/images/work/modern-resolve.webp",
+          alt: "Modern Resolve CRM dashboard with task counts, a project timeline and invoice statistics",
+        },
+        gallery: [
+          {
+            src: "/images/work/modern-resolve-login.webp",
+            alt: "Modern Resolve sign-in screen",
+          },
+        ],
+        facts: [
+          { label: "Client", value: "Modern Resolve" },
+          { label: "Date", value: "May 2021" },
+          { label: "My role", value: "UI/UX design and front end" },
+          { label: "Tools", value: "HTML, CSS, JavaScript, PHP, MySQL" },
+        ],
+        body: [
+          "A web-based project management and CRM tool for handling projects, clients and teams in one place. It covers tasks, client communication and file sharing, with a dashboard users can arrange themselves.",
+        ],
+        results: [],
+        link: null,
+        visible: true,
+      },
+      {
+        slug: "digital-marketing-analysis",
+        title: "Digital Marketing Campaign Analysis (Sample)",
+        tags: ["Digital Marketing"],
+        cover: {
+          src: "/images/work/digital-marketing-analysis.webp",
+          alt: "Cover of a sample digital marketing campaign analysis by Ronil Estojero",
+        },
+        gallery: [],
+        facts: [
+          { label: "Type", value: "Sample analysis, not client work" },
+          { label: "Date", value: "May 2024" },
+          { label: "Channels", value: "Facebook, Instagram, TikTok, Google, email, SMS, website display, Amazon" },
+        ],
+        body: [
+          "A sample that shows how I approach a campaign: setting budgets and revenue forecasts, assigning tasks and deadlines, connecting channels so they work together, and comparing results against the forecast.",
+        ],
+        results: [],
+        link: {
+          label: "View the presentation",
+          url: "https://drive.google.com/file/d/1ET694cK_BoFLaqCpYkyBnPIWv4jOuapI/view",
+        },
+        visible: true,
+      },
+      {
+        slug: "onlinetabo",
+        title: "OnlineTabo Web and Mobile App",
+        tags: ["Mobile App", "Web App", "E-commerce"],
+        cover: {
+          src: "/images/work/onlinetabo.webp",
+          alt: "OnlineTabo app on a laptop, tablet and phone, showing produce listings",
+        },
+        gallery: [
+          {
+            src: "/images/work/onlinetabo-laptop.webp",
+            alt: "OnlineTabo store on a laptop, showing categories and best-reviewed items",
+          },
+        ],
+        facts: [
+          { label: "Client", value: "Taboan Products Trading, Philippines" },
+          { label: "Date", value: "October 2022" },
+          { label: "My role", value: "Part of the team on design, development and launch" },
+          { label: "Tools", value: "PHP, MySQL, JavaScript, React Native" },
+        ],
+        body: [
+          "An e-commerce platform for agricultural products in the Philippines, with web and mobile apps for buyers and sellers.",
+        ],
+        results: [],
+        link: null,
+        visible: true,
+      },
+      {
+        slug: "dr-david",
+        title: "Dr. David Oral Surgery Website",
+        tags: ["Web Design", "SEO"],
+        cover: {
+          src: "/images/work/dr-david.webp",
+          alt: "Home page of the David L. Sykes DMD oral and maxillofacial surgery website",
+        },
+        gallery: [],
+        facts: [
+          { label: "Client", value: "Mediboost, for David L. Sykes DMD, New Jersey" },
+          { label: "Date", value: "July 2021" },
+          { label: "My role", value: "Design, development, content and SEO" },
+          { label: "Tools", value: "WordPress, booking integration, Google Maps API" },
+        ],
+        body: [
+          "A website for an oral and maxillofacial surgery practice in Linwood, New Jersey, with service pages, a team section and appointment booking.",
+        ],
+        results: [],
+        link: { label: "Visit the site", url: "https://www.davidlsykes.com" },
+        visible: true,
+      },
+    ],
+  },
+
+  resume: {
+    visible: true,
+    eyebrow: "Building for the web since 2015",
+    title: "My Resume",
+    headline: "AI Full-Stack Developer | Digital Marketer | Sales Funnel Builder",
+    summary:
+      "Freelance AI full-stack developer and digital marketer. I build web apps and SaaS products, then the funnels, ads and automation that bring in customers. Building for the web since 2015, for clients in Australia, the US and the Philippines. Licensed Electrical Engineer before moving into software.",
+    roles: [
+      {
+        company: "CoNexa Pro",
+        title: "Solo Full-Stack Developer",
+        employment: "Own product",
+        country: "PH",
+        start: "2026-06",
+        end: null,
+        bullets: [
+          "Designed, built and run a live multi-tenant SaaS for construction companies, using AI-assisted engineering with Claude Code.",
+          "Built company workspaces, 6 user roles, subscription billing with Xendit, and an AI assistant that only sees what each user may see.",
+          "Release through feature branches, staging and production, with database branching and migration testing.",
+        ],
+      },
+      {
+        company: "Upwork client",
+        title: "AC to FluentCRM Migration and Automation",
+        employment: "Contract, remote",
+        country: null,
+        start: "2025-11",
+        end: null,
+        bullets: ["Migrating a client from ActiveCampaign to FluentCRM and rebuilding their automations."],
+      },
+      {
+        company: "Home of Aesthetics",
+        title: "Web Developer / Marketing",
+        employment: "Part-time, remote",
+        country: "AU",
+        start: "2024-03",
+        end: "2026-06",
+        bullets: [
+          "Team contributor on an Australian B2B multivendor marketplace for beauty professionals, built on WordPress, WooCommerce and Dokan.",
+        ],
+      },
+      {
+        company: "Digital Health Co.",
+        title: "Lead Web Developer / Marketing",
+        employment: "Part-time, remote",
+        country: "AU",
+        start: "2021-11",
+        end: "2024-06",
+        bullets: [
+          "Built a web application for the company's SaaS offering.",
+          "Developed and marketed its health and beauty website.",
+        ],
+      },
+      {
+        company: "Advance Digital Team",
+        title: "Operations and Digital Marketing Manager",
+        employment: "Part-time, remote",
+        country: "PH",
+        start: "2020-03",
+        end: "2024-03",
+        bullets: [
+          "Ran Facebook and Instagram ad funnels using the H.I.C.A., A.I.D.A. and P.A.S.A. formulas, with conversion rate optimization.",
+          "Set up automation that cut manual work.",
+          "Advised on marketing and automation tools.",
+        ],
+      },
+      {
+        company: "Upwork contracts",
+        title: "DIVI Web Developer and WooCommerce Developer",
+        employment: "Remote",
+        country: null,
+        start: "2021-11",
+        end: "2024-01",
+        bullets: ["Ongoing Divi and WooCommerce development."],
+      },
+      {
+        company: "Quality Clinicians",
+        title: "Web Developer",
+        employment: "Full-time, remote",
+        country: "US",
+        start: "2022-04",
+        end: "2022-12",
+        bullets: ["Built healthcare staffing websites with custom code and APIs."],
+      },
+      {
+        company: "Meridian Remote Teams",
+        title: "Front-End Web Developer",
+        employment: "Full-time, remote",
+        country: "PH",
+        start: "2021-11",
+        end: "2022-04",
+        bullets: ["Front-end work for client Advance Medical Group, using WordPress, HTML, CSS and JavaScript."],
+      },
+      {
+        company: "Modern Resolve",
+        title: "Lead UX and Frontend Developer",
+        employment: "Part-time, remote",
+        country: "PH",
+        start: "2021-02",
+        end: "2021-11",
+        bullets: ["Led UI/UX design and front end for a project management and CRM web app."],
+      },
+      {
+        company: "Mediboost Australia",
+        title: "Web Designer/Developer",
+        employment: "Full-time, remote",
+        country: "AU",
+        start: "2021-04",
+        end: "2021-09",
+        bullets: ["Designed and built healthcare websites with SEO."],
+      },
+      {
+        company: "Various clients (Upwork and remote)",
+        title: "Web Designer/Developer/Marketing",
+        employment: "Part-time, remote",
+        country: "AU/US",
+        start: "2015-04",
+        end: "2021-09",
+        bullets: ["Designed, built and marketed websites for clients in Australia and the US."],
+      },
+    ],
+    engineering: [
+      {
+        company: "Pacificfortia Marine Technologies Inc.",
+        title: "Senior/Head Electrical Engineer",
+        employment: "Office-based",
+        country: "PH",
+        start: "2014-04",
+        end: "2021-04",
+        bullets: [
+          "Boat construction projects for the Philippine Coast Guard, Philippine Navy, Philippine Marine Corps and BFAR.",
+          "Wrote technical specifications and General Arrangement drawings for bids, and designed electrical, navigation and communication systems.",
+          "Kept projects on time and on budget, and worked on a new warehouse and manufacturing facility.",
+        ],
+      },
+      {
+        company: "Hitachi Global Storage",
+        title: "Intern Electrical Engineer",
+        employment: "Internship",
+        country: "PH",
+        start: "2012-04",
+        end: "2012-06",
+        bullets: [],
+      },
+    ],
+    education: [
+      {
+        title: "Claude Code – The Ultimate Guide! Build Websites & SaaS Apps",
+        school: "Udemy",
+        dates: "Jun – Oct 2026",
+        note: "Certificate",
+      },
+      { title: "Project Management", school: "MST Connect Educational Consultancy", dates: "Jan 2024", note: null },
+      { title: "Full Stack Web Development", school: "Udemy", dates: "2020 – 2022", note: null },
+      {
+        title: "Digital Marketing Course",
+        school: "Udemy",
+        dates: "2020 – 2022",
+        note: 'Certificate: "Learn How To Start and Grow Your Own Digital Marketing Agency"',
+      },
+      {
+        title: "Web Development Course",
+        school: "QuickPro Online Professional Training Academy",
+        dates: "2020",
+        note: 'Certificate: "Website Development Expert"',
+      },
+      {
+        title: "BS Electrical Engineering",
+        school: "Eastern Visayas State University",
+        dates: "2008 – 2013",
+        note: "Licensed Electrical Engineer",
+      },
+    ],
+    skillGroups: [
+      {
+        name: "Full-Stack Development",
+        skills: ["Next.js", "React", "TypeScript", "Node.js", "PostgreSQL", "Prisma", "Neon", "Supabase", "Tailwind CSS", "shadcn/ui", "Better Auth", "Xendit", "Vercel", "GitHub", "AWS"],
+      },
+      {
+        name: "AI",
+        skills: ["Claude Code", "ChatGPT", "LLM APIs", "MCP servers", "AI features in apps"],
+      },
+      {
+        name: "Digital Marketing",
+        skills: ["Meta Ads", "Sales funnels", "Landing pages", "Conversion rate optimization", "SEO", "Social media marketing", "Content marketing", "Google Analytics"],
+      },
+      {
+        name: "Automation and CRM",
+        skills: ["FunnelKit", "FluentCRM", "Klaviyo", "ActiveCampaign", "Zapier", "n8n", "Email and SMS automation", "Segmentation"],
+      },
+      {
+        name: "CMS and E-commerce",
+        skills: ["WordPress", "WooCommerce", "Shopify", "Dokan", "Divi", "Elementor", "PHP", "MySQL", "cPanel"],
+      },
+      {
+        name: "Working Style",
+        skills: ["Project management", "Business process optimization", "Market research", "Data analysis", "Clear communication"],
+      },
+      {
+        name: "Engineering",
+        skills: ["Licensed Electrical Engineer", "Technical documentation", "Drafting and design"],
+      },
+    ],
+    languages: ["English (fluent)", "Filipino/Tagalog (fluent)"],
+    references: "References available on request.",
+  },
+
+  contact: {
+    visible: true,
+    eyebrow: "Contact",
+    title: "Let's Connect",
+    photo: { src: "/images/ronil-contact.webp", alt: "Ronil Estojero working on a laptop" },
+    role: "Full-Stack Developer | Digital Marketer | Funnel Builder",
+    intro: "I'm available for freelance work. Book a call, or send a message and I'll reply by email.",
+    formNote: "Your message goes straight to my inbox. I only use your details to reply.",
+  },
+};

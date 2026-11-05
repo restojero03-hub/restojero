@@ -1,7 +1,7 @@
 "use client";
 
 import { useActionState, useCallback, useRef, useState } from "react";
-import { submitContact } from "@/app/contact/actions";
+import { submitContact } from "@/lib/contact/actions";
 import { Turnstile, type TurnstileHandle } from "@/components/contact/turnstile";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -25,7 +25,7 @@ function FieldError({ id, message }: { id: string; message?: string }) {
   );
 }
 
-export function ContactForm() {
+export function ContactForm({ note }: { note: string }) {
   // Turnstile only loads once someone starts the form, so it can't slow the page down.
   const [started, setStarted] = useState(false);
   const [token, setToken] = useState<string | null>(null);
@@ -74,7 +74,7 @@ export function ContactForm() {
           maxLength={100}
           aria-invalid={Boolean(errors.name)}
           aria-describedby={errors.name ? "contact-name-error" : undefined}
-          className="mt-1.5"
+          className="form-field mt-1.5"
         />
         <FieldError id="contact-name-error" message={errors.name} />
       </div>
@@ -90,7 +90,7 @@ export function ContactForm() {
           required
           aria-invalid={Boolean(errors.email)}
           aria-describedby={errors.email ? "contact-email-error" : undefined}
-          className="mt-1.5"
+          className="form-field mt-1.5"
         />
         <FieldError id="contact-email-error" message={errors.email} />
       </div>
@@ -106,7 +106,7 @@ export function ContactForm() {
           maxLength={5000}
           aria-invalid={Boolean(errors.message)}
           aria-describedby={errors.message ? "contact-message-error" : undefined}
-          className="mt-1.5"
+          className="form-field mt-1.5"
         />
         <FieldError id="contact-message-error" message={errors.message} />
       </div>
@@ -141,12 +141,10 @@ export function ContactForm() {
       )}
 
       <div>
-        <Button type="submit" size="lg" disabled={pending || (started && !token)}>
+        <Button type="submit" size="lg" disabled={pending || (started && !token)} className="min-h-12 w-full px-7">
           {pending ? "Sending..." : "Send message"}
         </Button>
-        <p className="mt-3 text-sm text-muted-foreground">
-          Your message goes straight to my inbox. I only use your details to reply.
-        </p>
+        <p className="mt-3 text-sm text-muted-foreground">{note}</p>
       </div>
     </form>
   );
