@@ -197,7 +197,13 @@ const starter: SiteContentInput = {
           { label: "Funnel", value: "3 pages, with email automation" },
           { label: "Payments", value: "Online checkout and bank transfer" },
           { label: "My role", value: "Funnel builder, email and SMS automation, Meta Ads campaign manager" },
-          { label: "Tools", value: "Meta Ads Manager, WordPress, FunnelKit, Meta Pixel, Google Analytics" },
+        ],
+        tools: [
+          "Meta Ads Manager",
+          "WordPress",
+          "FunnelKit",
+          "Meta Pixel",
+          "Google Analytics",
         ],
         body: [
           "I built and ran this funnel for my own online course, so I can show the whole system. Client work stays confidential.",
@@ -227,7 +233,11 @@ const starter: SiteContentInput = {
           { label: "Client", value: "Home of Aesthetics, Australia" },
           { label: "Date", value: "February 2024" },
           { label: "My role", value: "Team contributor on design, development and launch" },
-          { label: "Tools", value: "WordPress, WooCommerce, Dokan" },
+        ],
+        tools: [
+          "WordPress",
+          "WooCommerce",
+          "Dokan",
         ],
         body: [
           "An Australian B2B marketplace where salon and clinic owners can research and compare beauty products and services from many vendors in one place.",
@@ -238,7 +248,7 @@ const starter: SiteContentInput = {
       },
       {
         slug: "conexa-pro",
-        title: "CoNexa Pro Construction SaaS",
+        title: "CoNexa Pro: Construction Operations SaaS Built with Next.js",
         tags: ["SaaS", "Web App", "AI"],
         cover: {
           src: "/images/conexa/boq.png",
@@ -267,13 +277,22 @@ const starter: SiteContentInput = {
         facts: [
           { label: "Type", value: "Multi-tenant SaaS for construction companies" },
           { label: "Since", value: "June 2026" },
-          { label: "My role", value: "Solo full-stack developer, using AI-assisted engineering with Claude Code" },
-          { label: "Tools", value: "Next.js, TypeScript, PostgreSQL on Neon, Prisma, Better Auth, Xendit, Vercel" },
+          { label: "My role", value: "Solo Full-Stack Developer and Product Owner" },
+        ],
+        tools: [
+          "Next.js",
+          "React",
+          "TypeScript",
+          "Prisma",
+          "PostgreSQL (Neon)",
+          "Better Auth",
+          "Cloudflare R2",
+          "Vercel",
         ],
         body: [
-          "A platform that brings estimating, Gantt scheduling, procurement, inventory, daily site reports and cost tracking into one place, with an AI assistant and paid subscriptions.",
-          "Each company gets its own workspace, with 6 roles and permission checks on every API call. The AI only sees what the person asking is allowed to see, and it never gets direct database access.",
-          "It's in real-world use through a 3-month pilot and transition program with a Philippine construction company.",
+          "CoNexa Pro is a live, multi-tenant B2B SaaS that lets construction companies run projects from office to site in one system. I built it solo with AI-assisted engineering.",
+          "What I built: BOQ estimating, Gantt scheduling, daily site reports, procurement, inventory, earned-value cost control and an AI assistant that only sees data each user may access.",
+          "The SaaS foundation: tenant isolation, 6 user roles, subscription plans with usage limits and Xendit billing.",
         ],
         results: [],
         link: { label: "See it live", url: "https://app.conexapro.io" },
@@ -299,7 +318,13 @@ const starter: SiteContentInput = {
           { label: "Client", value: "Modern Resolve" },
           { label: "Date", value: "May 2021" },
           { label: "My role", value: "UI/UX design and front end" },
-          { label: "Tools", value: "HTML, CSS, JavaScript, PHP, MySQL" },
+        ],
+        tools: [
+          "HTML",
+          "CSS",
+          "JavaScript",
+          "PHP",
+          "MySQL",
         ],
         body: [
           "A web-based project management and CRM tool for handling projects, clients and teams in one place. It covers tasks, client communication and file sharing, with a dashboard users can arrange themselves.",
@@ -352,7 +377,12 @@ const starter: SiteContentInput = {
           { label: "Client", value: "Taboan Products Trading, Philippines" },
           { label: "Date", value: "October 2022" },
           { label: "My role", value: "Part of the team on design, development and launch" },
-          { label: "Tools", value: "PHP, MySQL, JavaScript, React Native" },
+        ],
+        tools: [
+          "PHP",
+          "MySQL",
+          "JavaScript",
+          "React Native",
         ],
         body: [
           "An e-commerce platform for agricultural products in the Philippines, with web and mobile apps for buyers and sellers.",
@@ -374,7 +404,11 @@ const starter: SiteContentInput = {
           { label: "Client", value: "Mediboost, for David L. Sykes DMD, New Jersey" },
           { label: "Date", value: "July 2021" },
           { label: "My role", value: "Design, development, content and SEO" },
-          { label: "Tools", value: "WordPress, booking integration, Google Maps API" },
+        ],
+        tools: [
+          "WordPress",
+          "booking integration",
+          "Google Maps API",
         ],
         body: [
           "A website for an oral and maxillofacial surgery practice in Linwood, New Jersey, with service pages, a team section and appointment booking.",

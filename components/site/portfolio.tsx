@@ -81,6 +81,21 @@ function ProjectDetail({ project }: { project: Project }) {
             ))}
           </dl>
 
+          {project.tools.length > 0 && (
+            <div className="mt-5">
+              <p className="text-sm font-semibold text-title">
+                Tools
+              </p>
+              <ul aria-label="Tools" className="mt-2 flex flex-wrap gap-2">
+                {project.tools.map((tool) => (
+                  <li key={tool} className="tool-box">
+                    {tool}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
           {project.link && (
             <a href={project.link.url} target="_blank" rel="noopener noreferrer" className="btn mt-7">
               {project.link.label}

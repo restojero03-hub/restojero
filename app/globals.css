@@ -281,6 +281,13 @@
     color: var(--pink-text);
   }
 
+  /* Flat with a thin border, so it reads as a label. Buttons on this site are raised. */
+  .tool-box {
+    @apply rounded px-2.5 py-1 text-xs font-medium;
+    color: var(--title);
+    background: color-mix(in srgb, var(--pink-text) 8%, transparent);
+    border: 1px solid color-mix(in srgb, var(--pink-text) 40%, transparent);
+  }
   .skill-tag {
     @apply rounded-md px-3 py-1.5 text-sm;
     background: var(--neu-surface);

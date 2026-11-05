@@ -48,6 +48,8 @@ const project = z.object({
   cover: image,
   gallery: z.array(image),
   facts: z.array(z.object({ label: text, value: text })),
+  // Each one shows in its own small box in the pop-up.
+  tools: z.array(text).default([]),
   body: z.array(text),
   results: z.array(text),
   link: z.object({ label: text, url: webUrl }).nullable(),

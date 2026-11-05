@@ -142,6 +142,17 @@ test.describe("the portfolio", () => {
     expect(box!.height).toBeGreaterThan(300);
   });
 
+  test("each tool sits in its own small box, not a button", async ({ page }) => {
+    await page.goto("/#project-conexa-pro");
+    const dialog = page.getByRole("dialog");
+    await expect(dialog).toBeVisible();
+    const boxes = dialog.getByRole("list", { name: "Tools" }).getByRole("listitem");
+    await expect(boxes).toHaveCount(8);
+    await expect(boxes.first()).toHaveText("Next.js");
+    await expect(dialog.getByRole("button", { name: "Next.js" })).toHaveCount(0);
+    await expect(dialog.getByRole("link", { name: "Next.js" })).toHaveCount(0);
+  });
+
   test("a pop-up always opens at its top", async ({ page }) => {
     await page.goto("/#project-meta-ads-funnel");
     const dialog = page.getByRole("dialog");

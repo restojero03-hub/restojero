@@ -121,8 +121,29 @@ describe("the portfolio", () => {
     expect(withResults.map((project) => project.slug)).toEqual(["meta-ads-funnel"]);
   });
 
-  test("keeps the pilot client unnamed", () => {
-    expect(bySlug["conexa-pro"].body.join(" ")).toContain("a Philippine construction company");
+  test("lists each tool on its own, not inside a sentence", () => {
+    for (const project of items) {
+      expect(project.facts.map((fact) => fact.label), project.slug).not.toContain("Tools");
+      for (const tool of project.tools) expect(tool, project.slug).not.toContain(",");
+    }
+    expect(bySlug["meta-ads-funnel"].tools).toContain("FunnelKit");
+  });
+
+  test("CoNexa Pro matches the Upwork project", () => {
+    const conexa = bySlug["conexa-pro"];
+    expect(conexa.title).toBe("CoNexa Pro: Construction Operations SaaS Built with Next.js");
+    expect(conexa.tools).toEqual([
+      "Next.js",
+      "React",
+      "TypeScript",
+      "Prisma",
+      "PostgreSQL (Neon)",
+      "Better Auth",
+      "Cloudflare R2",
+      "Vercel",
+    ]);
+    expect(conexa.body[0]).toContain("multi-tenant B2B SaaS");
+    expect(conexa.facts).toContainEqual({ label: "My role", value: "Solo Full-Stack Developer and Product Owner" });
   });
 });
 

@@ -240,6 +240,7 @@ function newProject(): Project {
     cover: { src: "", alt: "" },
     gallery: [],
     facts: [],
+    tools: [],
     body: [],
     results: [],
     link: null,
@@ -290,6 +291,13 @@ function ProjectFields({ project, change }: { project: Project; change: (next: P
             <TextField label="Value" value={fact.value} onChange={(value) => update({ ...fact, value })} />
           </div>
         )}
+      />
+      <LinesField
+        label="Tools"
+        hint="One per line. Each shows in its own small box."
+        rows={5}
+        value={project.tools}
+        onChange={(tools) => change({ ...project, tools })}
       />
       <ParagraphsField label="Description" value={project.body} onChange={(body) => change({ ...project, body })} />
       <LinesField label="Results" value={project.results} onChange={(results) => change({ ...project, results })} />
