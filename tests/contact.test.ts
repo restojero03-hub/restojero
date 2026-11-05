@@ -234,6 +234,25 @@ describe("the inbox", () => {
     expect(save).not.toHaveBeenCalled();
   });
 
+  test("with no spam check, sends no email if the limit can't be checked", async () => {
+    const emailOnly = { RESEND_API_KEY: "k", RESEND_FROM_EMAIL: "a@example.com", CONTACT_TO_EMAIL: "b@example.com" };
+    const { save, send, deps } = withInbox({ env: { ...emailOnly, ...dbEnv } });
+    deps.inbox.countRecent.mockRejectedValue(new Error("database down"));
+    const result = await handleContact(form(valid), deps);
+    expect(result.status).toBe("error");
+    expect(result.values?.message).toBe(valid.message);
+    expect(save).not.toHaveBeenCalled();
+    expect(send).not.toHaveBeenCalled();
+  });
+
+  test("with the spam check, email still goes out if the database is down", async () => {
+    const { sent, deps } = withInbox();
+    deps.inbox.countRecent.mockRejectedValue(new Error("database down"));
+    const result = await handleContact(form(valid), deps);
+    expect(result.status).toBe("success");
+    expect(sent).toHaveLength(1);
+  });
+
   test("a flood of messages hits the hourly limit", async () => {
     const { save, send, deps } = withInbox({ recent: 30 });
     const result = await handleContact(form(valid), deps);
