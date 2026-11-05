@@ -270,6 +270,7 @@
 
   /* Pop-ups */
   .site-dialog {
+    overscroll-behavior: contain;
     @apply m-auto max-h-[92dvh] w-[min(1180px,calc(100vw-1.5rem))] max-w-none overflow-y-auto rounded-[10px] border-0 bg-background p-0;
     box-shadow: 0 24px 80px rgb(0 0 0 / 0.5);
     color: var(--muted-foreground);

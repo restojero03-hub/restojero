@@ -1,3 +1,5 @@
+import path from "node:path";
+import sharp from "sharp";
 import { describe, expect, test } from "vitest";
 import { defaultContent } from "@/content/defaults";
 import { siteContentSchema, type Role } from "@/lib/content/schema";
@@ -209,5 +211,24 @@ describe("image links", () => {
     expect(withCover("//example.com/photo.webp")).toBe(false);
     expect(withCover("https://abc123.public.blob.vercel-storage.com.example.com/photo.webp")).toBe(false);
     expect(withCover("javascript:alert(1)")).toBe(false);
+  });
+});
+describe("large project images", () => {
+  const images = defaultContent.portfolio.items.flatMap((project) => project.gallery);
+
+  // The real size lets the page hold the right space, so nothing jumps as images load.
+  test("each has its real size on record", async () => {
+    expect(images.length).toBeGreaterThan(0);
+    for (const image of images) {
+      const { width, height } = await sharp(path.join("public", image.src)).metadata();
+      expect({ src: image.src, width: image.width, height: image.height }).toEqual({ src: image.src, width, height });
+    }
+  });
+
+  test("the funnel shows its slides, without the one that has customer reviews", () => {
+    const funnel = defaultContent.portfolio.items.find((project) => project.slug === "meta-ads-funnel");
+    const sources = funnel?.gallery.map((image) => image.src) ?? [];
+    expect(sources).toHaveLength(9);
+    expect(sources.join()).not.toContain("funnel-slide-02");
   });
 });

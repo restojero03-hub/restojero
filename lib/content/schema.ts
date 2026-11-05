@@ -13,7 +13,13 @@ const imageSrc = z
   .regex(/^(\/(?!\/)|https:\/\/[a-z0-9]+\.public\.blob\.vercel-storage\.com\/)/, "Upload the image from the dashboard");
 const yearMonth = z.string().regex(/^\d{4}-(0[1-9]|1[0-2])$/, "Use YYYY-MM");
 
-const image = z.object({ src: imageSrc, alt: text });
+const image = z.object({
+  src: imageSrc,
+  alt: text,
+  // The real size, so the page can hold the right space before a large image loads.
+  width: z.number().int().positive().optional(),
+  height: z.number().int().positive().optional(),
+});
 
 export const CONTENT_ID = "main";
 

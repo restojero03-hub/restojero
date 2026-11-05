@@ -124,6 +124,37 @@ test.describe("the portfolio", () => {
     await expect(dialog.getByRole("link", { name: "See it live" })).toHaveAttribute("href", "https://app.conexapro.io");
   });
 
+  test("the pop-up has one image up top, then large ones that load as you scroll", async ({ page }) => {
+    await page.goto("/#project-meta-ads-funnel");
+    const dialog = page.getByRole("dialog");
+    await expect(dialog).toBeVisible();
+
+    await expect(dialog.getByRole("button", { name: /Show image/ })).toHaveCount(0);
+
+    const large = dialog.locator("a[target=_blank] img");
+    await expect(large).toHaveCount(9);
+    await expect(large.first()).toHaveAttribute("loading", "lazy");
+    await expect(large.first()).toHaveAttribute("width", "1920");
+    await expect(large.first()).toHaveAttribute("height", "1080");
+
+    // The space is held before the image arrives, so scrolling doesn't jump.
+    const box = await large.last().boundingBox();
+    expect(box!.height).toBeGreaterThan(300);
+  });
+
+  test("a pop-up always opens at its top", async ({ page }) => {
+    await page.goto("/#project-meta-ads-funnel");
+    const dialog = page.getByRole("dialog");
+    await expect(dialog).toBeVisible();
+    await dialog.evaluate((element) => element.scrollTo(0, element.scrollHeight));
+    await dialog.getByRole("button", { name: "Close" }).click();
+    await expect(dialog).toBeHidden();
+
+    await page.locator('[data-project="conexa-pro"]').click();
+    await expect(dialog).toBeVisible();
+    expect(await dialog.evaluate((element) => element.scrollTop)).toBe(0);
+  });
+
   test("a share link to a project hidden behind Load more still opens", async ({ page }) => {
     await page.goto("/#project-dr-david");
     await expect(page.getByRole("dialog")).toContainText("Dr. David");
@@ -146,7 +177,7 @@ test.describe("the portfolio", () => {
     await page.goto("/#project-onlinetabo");
     const dialog = page.getByRole("dialog");
     await expect(dialog).toContainText("OnlineTabo");
-    await expect(dialog.locator('a[href*="onlinetabo"]')).toHaveCount(0);
+    await expect(dialog.locator('a[href*="onlinetabo"]:not([href^="/images/"])')).toHaveCount(0);
   });
 });
 

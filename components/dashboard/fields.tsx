@@ -279,7 +279,21 @@ export function ParagraphsField({
   );
 }
 
-function ImageUploadButton({ onUploaded }: { onUploaded: (url: string) => void }) {
+type ImageSize = { width: number; height: number };
+
+// A browser that can't read the size still uploads the image. The page just can't hold its space.
+async function readImageSize(file: File): Promise<ImageSize | undefined> {
+  try {
+    const bitmap = await createImageBitmap(file);
+    const size = { width: bitmap.width, height: bitmap.height };
+    bitmap.close();
+    return size;
+  } catch {
+    return undefined;
+  }
+}
+
+function ImageUploadButton({ onUploaded }: { onUploaded: (url: string, size?: ImageSize) => void }) {
   const input = useRef<HTMLInputElement>(null);
   const [busy, setBusy] = useState(false);
   const [problem, setProblem] = useState<string | null>(null);
@@ -287,7 +301,7 @@ function ImageUploadButton({ onUploaded }: { onUploaded: (url: string) => void }
   // An upload takes a while and the form can change meanwhile. Calling the handler from when
   // the file was chosen would undo those edits, so this always holds the newest one, or
   // null once this field is gone.
-  const latestOnUploaded = useRef<((url: string) => void) | null>(null);
+  const latestOnUploaded = useRef<((url: string, size?: ImageSize) => void) | null>(null);
   useEffect(() => {
     latestOnUploaded.current = onUploaded;
     return () => {
@@ -303,8 +317,11 @@ function ImageUploadButton({ onUploaded }: { onUploaded: (url: string) => void }
     setBusy(true);
     try {
       const safeName = file.name.replace(/[^\w.-]+/g, "-");
-      const blob = await upload(`uploads/${safeName}`, file, { access: "public", handleUploadUrl: "/api/upload" });
-      latestOnUploaded.current?.(blob.url);
+      const [blob, size] = await Promise.all([
+        upload(`uploads/${safeName}`, file, { access: "public", handleUploadUrl: "/api/upload" }),
+        readImageSize(file),
+      ]);
+      latestOnUploaded.current?.(blob.url, size);
     } catch (error) {
       console.error("Upload failed", error);
       setProblem("The upload didn't work. Please try again.");
@@ -356,7 +373,7 @@ function Preview({ src }: { src: string }) {
   );
 }
 
-type Image = { src: string; alt: string };
+type Image = { src: string; alt: string; width?: number; height?: number };
 
 export function ImageField({
   label,
@@ -373,7 +390,9 @@ export function ImageField({
       <div className="mt-2 flex flex-wrap items-start gap-4">
         <Preview src={value.src} />
         <div className="min-w-48 flex-1 space-y-3">
-          <ImageUploadButton onUploaded={(src) => onChange({ ...value, src })} />
+          <ImageUploadButton
+            onUploaded={(src, size) => onChange({ ...value, src, width: size?.width, height: size?.height })}
+          />
           <TextField
             label="Description"
             hint="Read aloud by screen readers and shown if the image can't load."
@@ -402,7 +421,7 @@ export function IconField({
       <div className="mt-2 flex flex-wrap items-center gap-4">
         <Preview src={value ?? ""} />
         <div className="flex flex-wrap items-start gap-3">
-          <ImageUploadButton onUploaded={onChange} />
+          <ImageUploadButton onUploaded={(url) => onChange(url)} />
           {value && (
             <button type="button" onClick={() => onChange(null)} className="btn min-h-10 px-4 text-xs">
               Use initials

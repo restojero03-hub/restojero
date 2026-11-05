@@ -25,82 +25,107 @@ function clearHash() {
   window.dispatchEvent(new HashChangeEvent("hashchange"));
 }
 
-function ProjectDetail({ project }: { project: Project }) {
-  const images = [project.cover, ...project.gallery];
-  const [index, setIndex] = useState(0);
-  const current = images[index];
+const COVER_SIZES = "(min-width: 1204px) 534px, (min-width: 1024px) calc(50vw - 68px), calc(100vw - 64px)";
+const LARGE_SIZES = "(min-width: 1204px) 1100px, (min-width: 640px) calc(100vw - 104px), calc(100vw - 64px)";
 
+// A large image in the description. It's held at its real shape so the page doesn't jump as it
+// loads, and small images are never stretched past their real width. Opening one in a new tab
+// shows the original, which helps most on a phone.
+function LargeImage({ image }: { image: Project["gallery"][number] }) {
   return (
-    <div className="grid grid-cols-1 gap-8 p-5 sm:p-10 lg:grid-cols-2">
-      <div className="min-w-0">
-        <div className="relative aspect-[4/3] overflow-hidden rounded-[10px] bg-secondary">
+    <a
+      href={image.src}
+      target="_blank"
+      rel="noopener noreferrer"
+      style={{ maxWidth: image.width }}
+      className="mx-auto block cursor-zoom-in overflow-hidden rounded-[10px] bg-secondary"
+    >
+      <Image
+        src={image.src}
+        alt={image.alt}
+        width={image.width ?? 1200}
+        height={image.height ?? 675}
+        sizes={LARGE_SIZES}
+        className="block h-auto w-full"
+      />
+      <span className="sr-only">Opens full size in a new tab.</span>
+    </a>
+  );
+}
+
+function ProjectDetail({ project }: { project: Project }) {
+  return (
+    <div className="p-5 sm:p-10">
+      <div className="grid grid-cols-1 gap-8 lg:grid-cols-2 lg:items-center">
+        <div className="relative aspect-[4/3] min-w-0 overflow-hidden rounded-[10px] bg-secondary">
           <Image
-            key={current.src}
-            src={current.src}
-            alt={current.alt}
+            src={project.cover.src}
+            alt={project.cover.alt}
             fill
-            sizes="(min-width: 1024px) 540px, calc(100vw - 64px)"
+            loading="eager"
+            sizes={COVER_SIZES}
             className="object-contain"
           />
         </div>
-        {images.length > 1 && (
-          <ul className="mt-4 flex flex-wrap gap-3">
-            {images.map((image, imageIndex) => (
-              <li key={image.src}>
-                <button
-                  type="button"
-                  aria-label={`Show image ${imageIndex + 1} of ${images.length}`}
-                  aria-current={imageIndex === index}
-                  onClick={() => setIndex(imageIndex)}
-                  className={cn(
-                    "relative block h-16 w-20 cursor-pointer overflow-hidden rounded-md border-2 bg-secondary",
-                    imageIndex === index ? "border-pink" : "border-transparent",
-                  )}
-                >
-                  <Image src={image.src} alt="" fill sizes="80px" className="object-cover object-top" />
-                </button>
-              </li>
+
+        <div className="min-w-0">
+          <p className="tag">{project.tags.join(" | ")}</p>
+          <h3 className="mt-3 text-[clamp(1.5rem,2.4vw,1.875rem)] leading-tight font-bold text-pretty lg:pr-10">{project.title}</h3>
+
+          <dl className="mt-6 grid grid-cols-1 gap-x-8 gap-y-3 sm:grid-cols-2">
+            {project.facts.map((fact) => (
+              <div key={fact.label}>
+                <dt className="text-sm font-semibold text-title">{fact.label}</dt>
+                <dd className="text-sm">{fact.value}</dd>
+              </div>
             ))}
-          </ul>
-        )}
-      </div>
+          </dl>
 
-      <div className="min-w-0">
-        <p className="tag">{project.tags.join(" | ")}</p>
-        <h3 className="mt-3 pr-10 text-[clamp(1.5rem,2.4vw,1.875rem)] leading-tight font-bold">{project.title}</h3>
-
-        <dl className="mt-6 grid grid-cols-1 gap-x-8 gap-y-3 sm:grid-cols-2">
-          {project.facts.map((fact) => (
-            <div key={fact.label}>
-              <dt className="text-sm font-semibold text-title">{fact.label}</dt>
-              <dd className="text-sm">{fact.value}</dd>
-            </div>
-          ))}
-        </dl>
-
-        <div className="mt-6 space-y-3">
-          {project.body.map((paragraph) => (
-            <p key={paragraph}>{paragraph}</p>
-          ))}
+          {project.link && (
+            <a href={project.link.url} target="_blank" rel="noopener noreferrer" className="btn mt-7">
+              {project.link.label}
+            </a>
+          )}
         </div>
-
-        {project.results.length > 0 && (
-          <div className="mt-6">
-            <h4 className="font-semibold">Results</h4>
-            <ul className="mt-2 list-disc space-y-1 pl-5">
-              {project.results.map((result) => (
-                <li key={result}>{result}</li>
-              ))}
-            </ul>
-          </div>
-        )}
-
-        {project.link && (
-          <a href={project.link.url} target="_blank" rel="noopener noreferrer" className="btn mt-7">
-            {project.link.label}
-          </a>
-        )}
       </div>
+
+      {(project.body.length > 0 || project.results.length > 0) && (
+        <div
+          className={cn(
+            "mt-8 grid grid-cols-1 gap-8 border-t border-(--line) pt-8",
+            project.body.length > 0 && project.results.length > 0 && "lg:grid-cols-2",
+          )}
+        >
+          {project.body.length > 0 && (
+            <div className="min-w-0 space-y-3">
+              {project.body.map((paragraph) => (
+                <p key={paragraph}>{paragraph}</p>
+              ))}
+            </div>
+          )}
+          {project.results.length > 0 && (
+            <div className="min-w-0">
+              <h4 className="font-semibold">Results</h4>
+              <ul className="mt-2 list-disc space-y-1 pl-5">
+                {project.results.map((result) => (
+                  <li key={result}>{result}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
+      )}
+
+      {project.gallery.length > 0 && (
+        <div className="mt-8 border-t border-(--line) pt-8">
+          <p className="text-sm">Tap or click any image to open it full size.</p>
+          <div className="mt-4 space-y-6">
+            {project.gallery.map((image) => (
+              <LargeImage key={image.src} image={image} />
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -132,6 +157,8 @@ export function Portfolio({ portfolio }: { portfolio: SiteContent["portfolio"] }
     const element = dialog.current;
     if (!element) return;
     if (active && !element.open) element.showModal();
+    // Pop-ups can be long, so the next one shouldn't open partway down.
+    if (active) element.scrollTop = 0;
     if (!active && element.open) element.close();
   }, [active]);
 

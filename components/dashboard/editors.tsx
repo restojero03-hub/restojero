@@ -269,7 +269,7 @@ function ProjectFields({ project, change }: { project: Project; change: (next: P
       <LinesField label="Tags" rows={3} value={project.tags} onChange={(tags) => change({ ...project, tags })} />
       <ImageField label="Cover image" value={project.cover} onChange={(cover) => change({ ...project, cover })} />
       <ListEditor
-        label="More images in the pop-up"
+        label="Large images below the description"
         items={project.gallery}
         onChange={(gallery) => change({ ...project, gallery })}
         newItem={() => ({ src: "", alt: "" })}

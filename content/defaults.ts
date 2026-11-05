@@ -136,20 +136,58 @@ const starter: SiteContentInput = {
         },
         gallery: [
           {
-            src: "/images/work/funnel-results.webp",
-            alt: "Results slide with Meta Ads purchase ROAS, and funnel visitors, orders and revenue",
+            src: "/images/work/funnel-slide-03.webp",
+            width: 1920,
+            height: 1080,
+            alt: "Slide on the challenges before launch, such as turning ad traffic into qualified leads and handling bank transfers",
           },
           {
-            src: "/images/work/funnel-ads.webp",
-            alt: "Three Meta ads for the course, on Instagram and Facebook",
+            src: "/images/work/funnel-slide-04.webp",
+            width: 1920,
+            height: 1080,
+            alt: "Slide on the campaign goals, with the path from Facebook and Instagram through the landing, checkout and thank-you pages",
           },
           {
-            src: "/images/work/funnel-landing.webp",
-            alt: "The funnel's landing page, with a headline and a register button",
+            src: "/images/work/funnel-slide-05.webp",
+            width: 1920,
+            height: 1080,
+            alt: "Slide on how the funnel is built, with the views, conversions and revenue at each page",
           },
           {
-            src: "/images/work/funnel-automations.webp",
-            alt: "A list of the funnel's automations, including an opt-in follow-up and a payment follow-up",
+            src: "/images/work/funnel-slide-06.webp",
+            width: 1920,
+            height: 1080,
+            alt: "Slide on the email automation, with the workflows for opt-ins, payment follow-ups and enrollment",
+          },
+          {
+            src: "/images/work/funnel-slide-07.webp",
+            width: 1920,
+            height: 1080,
+            alt: "Slide on the Meta Ads strategy, with five example ads for the course",
+          },
+          {
+            src: "/images/work/funnel-slide-08.webp",
+            width: 1920,
+            height: 1080,
+            alt: "Slide on the Meta Ads results, with purchase ROAS of 6.77, 5.88 and 8.03",
+          },
+          {
+            src: "/images/work/funnel-slide-09.webp",
+            width: 1920,
+            height: 1080,
+            alt: "Slide on the results and outcomes, with funnel visitors, orders and revenue",
+          },
+          {
+            src: "/images/work/funnel-slide-10.webp",
+            width: 1920,
+            height: 1080,
+            alt: "Slide on the tools used, including Meta Ads Manager, Google Analytics, Meta Pixel, FunnelKit and Canva",
+          },
+          {
+            src: "/images/work/funnel-slide-11.webp",
+            width: 1920,
+            height: 1080,
+            alt: "Slide on my role, the key insights and a final summary",
           },
         ],
         facts: [
@@ -209,14 +247,20 @@ const starter: SiteContentInput = {
         gallery: [
           {
             src: "/images/conexa/schedule.png",
+            width: 1440,
+            height: 900,
             alt: "CoNexa Pro schedule screen with work breakdown and progress, for a demo project",
           },
           {
             src: "/images/conexa/daily-report.png",
+            width: 1440,
+            height: 900,
             alt: "CoNexa Pro daily site report for a demo project",
           },
           {
             src: "/images/conexa/cost-tracking.png",
+            width: 1440,
+            height: 900,
             alt: "CoNexa Pro cost tracking overview for a demo project",
           },
         ],
@@ -246,6 +290,8 @@ const starter: SiteContentInput = {
         gallery: [
           {
             src: "/images/work/modern-resolve-login.webp",
+            width: 1200,
+            height: 574,
             alt: "Modern Resolve sign-in screen",
           },
         ],
@@ -297,6 +343,8 @@ const starter: SiteContentInput = {
         gallery: [
           {
             src: "/images/work/onlinetabo-laptop.webp",
+            width: 1000,
+            height: 1065,
             alt: "OnlineTabo store on a laptop, showing categories and best-reviewed items",
           },
         ],
