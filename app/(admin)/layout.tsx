@@ -22,7 +22,6 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
     <ClerkProvider
       signInUrl="/sign-in"
       signInFallbackRedirectUrl="/dashboard"
-      signUpFallbackRedirectUrl="/dashboard"
       afterSignOutUrl="/sign-in"
       appearance={{ variables: { colorPrimary: "#e4004b" } }}
     >

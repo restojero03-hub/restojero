@@ -1,6 +1,6 @@
 import { SectionHeading } from "@/components/site/section-heading";
-import { VideoFacade } from "@/components/video-facade";
-import { CV_PATH } from "@/lib/cv";
+import { VideoFacade } from "@/components/site/video-facade";
+import { CV_PATH } from "@/lib/cv/path";
 import type { SiteContent } from "@/lib/content/schema";
 
 export function About({ about }: { about: SiteContent["about"] }) {

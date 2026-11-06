@@ -3,7 +3,7 @@
 import { useEffect, useState, useTransition, type ReactNode } from "react";
 import { saveSection, type SaveResult } from "@/lib/content/actions";
 import { sectionLabels, type SectionKey } from "@/lib/content/sections";
-import { CV_PATH } from "@/lib/cv";
+import { CV_PATH } from "@/lib/cv/path";
 import { setUnsavedChanges } from "@/lib/dashboard/unsaved";
 
 // "items.0.slug" reads as "items 1 > slug", counting from one like a person would.

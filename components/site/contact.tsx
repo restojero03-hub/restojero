@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { ContactForm } from "@/components/contact/contact-form";
+import { ContactForm } from "@/components/site/contact-form";
 import { BookCallButton } from "@/components/site/book-call-button";
 import { SectionHeading } from "@/components/site/section-heading";
 import { SocialLinks } from "@/components/site/social-links";

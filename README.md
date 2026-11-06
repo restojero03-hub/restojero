@@ -1,18 +1,69 @@
-# Ronil Estojero portfolio
+# Ronil Estojero · Portfolio
 
-The personal site and CV of Ronil Estojero ("Engr. Nil"): freelance full-stack developer, digital marketer and funnel builder.
+The portfolio of Ronil Estojero, a freelance full-stack developer, digital marketer and funnel builder. It includes a private dashboard where the owner edits every word and image on the site without touching code.
 
-Built with Next.js (App Router), TypeScript, Tailwind CSS and shadcn/ui, with a logged-in dashboard for editing everything on the site. Public pages are pre-built, so visitors never wait on the database. Saving in the dashboard rebuilds them within seconds.
+**Live:** [restojero.vercel.app](https://restojero.vercel.app)
 
-## Edit the content
+![The home page in dark mode](docs/screenshot.webp)
 
-Go to `/dashboard` and sign in. From there you can change all the text and photos, the hero titles and tool icons, services, projects and their pop-ups, experience, education, skills and links. You can also reorder lists and show or hide any section or item. The CV PDF is built from the same content, and contact form messages land under **Messages**.
+## Features
 
-Only verified email addresses listed in `ADMIN_EMAILS` can get in. Anyone else who signs up sees a "No access" page.
+- **One-page site** with hero, about, services, portfolio, resume and contact sections, in dark and light themes.
+- **Project pop-ups** that open from shareable links such as `/#project-conexa-pro`, with large images that load as you scroll.
+- **Dashboard** at `/dashboard` for editing all content. You can reorder lists, show or hide any section or item, and upload images.
+- **Messages inbox** for the contact form, protected by Cloudflare Turnstile and an hourly limit.
+- **CV as a PDF**, generated from the same content, so it always matches the site.
+- **Pre-built public pages.** Visitors never wait on the database, and a save in the dashboard rebuilds the pages within seconds.
 
-`content/defaults.ts` holds the starter copy. The site only uses it when no database is connected or nothing has been saved yet. Once the dashboard is in use, change content there, not in that file.
+## Tech stack
 
-## Run it locally
+| Area | Tools |
+|---|---|
+| Framework | Next.js 16 (App Router), React 19, TypeScript |
+| Styling | Tailwind CSS 4, shadcn/ui, next-themes |
+| Data | PostgreSQL on Neon, Prisma 7, zod |
+| Auth | Clerk, limited to an allowlist |
+| Files | Vercel Blob |
+| Contact | Cloudflare Turnstile, optional Resend email |
+| PDF | @react-pdf/renderer |
+| Testing | Vitest, Playwright |
+| Hosting | Vercel |
+
+## How it works
+
+- **Content is one validated document.** Every section lives in a single Postgres row, checked against a zod schema on every save and every read. With no database connected, the site falls back to the starter copy in `content/defaults.ts`.
+- **Pages are static until a save.** Saving calls `revalidatePath`, which rebuilds the home page, its share image and the CV PDF. A failed database read never swaps in the starter copy: it fails loudly instead, so a build can't publish the wrong content.
+- **Access is checked where the data is.** Every dashboard page, server action and upload route confirms the signed-in user is the owner. The proxy only makes the login session readable, and hidden items are removed on the server before anything reaches the browser.
+- **Uploads go straight to storage.** The browser uploads images directly to Vercel Blob with a short-lived token. The server issues the token only to the owner, and it limits uploads to images under 8 MB, with no SVG.
+
+## Project structure
+
+```text
+app/
+  (site)/                  Public page and its layout
+  (admin)/                 Dashboard and sign-in, the only routes that load Clerk
+  api/upload/              Issues image upload tokens to the owner
+  ronil-estojero-cv.pdf/   The CV, built from saved content
+components/
+  site/                    Public sections, header, footer, contact form
+  dashboard/               Section editors, form fields, inbox
+  theme/                   Theme provider and toggle
+  ui/                      shadcn/ui primitives
+content/defaults.ts        Starter content, used until something is saved
+lib/
+  auth/                    Owner check and page guard
+  content/                 Schema, reads, saves, list helpers
+  contact/                 Form handling, inbox, spam check
+  cv/                      CV document and its URL
+  db.ts                    Prisma client
+prisma/                    Schema and migrations
+scripts/seed-content.ts    Puts the starter content in an empty database
+tests/                     Unit tests (Vitest)
+e2e/                       Browser tests (Playwright)
+proxy.ts                   Clerk session for dashboard routes only
+```
+
+## Getting started
 
 You need Node.js 24.
 
@@ -23,89 +74,67 @@ npx vercel@latest env pull .env.local
 npm run dev
 ```
 
-The site opens at <http://localhost:3000>.
+The site runs at <http://localhost:3000>.
 
-**Local and live share one database.** With `.env.local` pulled from Vercel, a save in your local dashboard changes the live content too. To work on the site without touching real content, leave `DATABASE_URL` out of `.env.local`. The site then shows the starter copy and the dashboard can't save.
+With `.env.local` pulled from Vercel, local and live share one database, so a save in the local dashboard changes the live content too. To work without touching real content, leave `DATABASE_URL` out of `.env.local`. The site then shows the starter copy, and the dashboard can't save.
 
 A copy with no settings at all still builds and runs. It shows the starter copy, with no login and no contact form.
 
 ## Environment variables
 
-Set these in Vercel (Project, Settings, Environment Variables) and in `.env.local` for local work. Never commit them. Redeploy after changing one.
+Set these in Vercel and in `.env.local`. Never commit them. `.env.example` lists them all.
 
-| Name | Required | What it does |
-|---|---|---|
-| `NEXT_PUBLIC_SITE_URL` | No | The site's address, used for SEO, the sitemap and the CV. Defaults to `https://restojero.vercel.app`. |
-| `DATABASE_URL` | For the dashboard | Neon connection used by the site. Set up through the Vercel Marketplace. |
-| `DATABASE_URL_UNPOOLED` | For migrations | Neon direct connection, used by Prisma when changing tables. |
-| `CLERK_SECRET_KEY` | For the dashboard | Clerk login. Set up through the Vercel Marketplace. |
-| `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` | For the dashboard | Clerk login, browser side. |
-| `ADMIN_EMAILS` | For the dashboard | Comma-separated emails allowed in. If empty, nobody can get in. It's kept out of the code because this repo is public. |
-| `BLOB_READ_WRITE_TOKEN` | For uploads | Vercel Blob store for images uploaded from the dashboard. |
-| `RESEND_API_KEY` | No | Also email each form message through Resend. |
-| `RESEND_FROM_EMAIL` | No | The sender address. It must use a domain verified in Resend. |
-| `CONTACT_TO_EMAIL` | No | The address that receives those emails. |
-| `NEXT_PUBLIC_TURNSTILE_SITE_KEY` | No | Cloudflare Turnstile site key, for the spam check on the form. |
-| `TURNSTILE_SECRET_KEY` | No | Cloudflare Turnstile secret key. |
+| Name | What it does |
+|---|---|
+| `DATABASE_URL`, `DATABASE_URL_UNPOOLED` | Neon connections for the site and for migrations |
+| `CLERK_SECRET_KEY`, `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` | Dashboard login |
+| `ADMIN_EMAILS` | Comma-separated verified emails allowed into the dashboard. Empty means nobody. |
+| `BLOB_READ_WRITE_TOKEN` | Image uploads |
+| `NEXT_PUBLIC_TURNSTILE_SITE_KEY`, `TURNSTILE_SECRET_KEY` | Spam check on the contact form |
+| `RESEND_API_KEY`, `RESEND_FROM_EMAIL`, `CONTACT_TO_EMAIL` | Optional: also email each message |
+| `NEXT_PUBLIC_SITE_URL` | Optional: the site's address. Defaults to `https://restojero.vercel.app`. |
 
-The contact form appears when a database is connected, or when email and Turnstile are both set. With a database, messages are capped at 30 an hour across the site. Email only goes out for a message that was saved, or one that passed Turnstile, so a script can't fill the mailbox.
+The contact form appears when a database is connected, or when email and Turnstile are both set. Messages are capped at 30 an hour across the site, and email only goes out for a message that was saved or passed Turnstile.
 
-## Changing the database
+## Scripts
 
-Tables are defined in `prisma/schema.prisma`. After changing it:
+| Command | Does |
+|---|---|
+| `npm run dev` | Starts the development server |
+| `npm run build` | Builds for production |
+| `npm run lint` | Runs ESLint |
+| `npm run typecheck` | Generates route types and runs TypeScript |
+| `npm test` | Runs the unit tests |
+| `npm run e2e` | Runs the browser tests against a production build |
+| `npm run db:migrate` | Applies database migrations |
+| `npm run db:seed` | Saves the starter content to an empty database |
 
-```bash
-npx prisma migrate dev --name what-changed
-```
+## Testing
 
-That also applies the change to the database in `.env.local`. Migrations don't run during a deploy, so apply them before pushing code that needs them:
+The unit tests check the content rules, keep phone numbers and third-party contact details out of the site, and confirm that every save, upload and inbox action rejects anyone but the owner. They never touch the real database.
 
-```bash
-npm run db:migrate
-```
-
-`npm run db:seed` puts the starter copy in an empty database. It never overwrites saved edits.
-
-Saved content is checked against `lib/content/schema.ts` every time it's read. If you add a required field, give it a default, or a read of older content will fail. A failed read never swaps in the starter copy: a build fails and the last deployment stays online, and a page being rebuilt shows a short "try again" page until the database is back. Saving rebuilds the public pages straight away, so a visitor would only see that during an outage in the moment after a save.
-
-## Check your work
-
-```bash
-npm run lint
-npm run typecheck
-npm test
-npm run build
-npm run e2e
-```
-
-`npm test` runs the unit tests, including checks that keep banned content out of the site, such as phone numbers and third-party contact details, and checks that every save, upload and inbox action rejects anyone who isn't the admin. The tests never touch the real database.
-
-`npm run e2e` runs the browser tests against the production build, reading the database in `.env.local` but never writing to it. Its checks expect the starter copy, so after real edits, build with no database first:
+The browser tests run against a production build. They expect the starter copy, so build without the database first:
 
 ```bash
 DATABASE_URL= npm run build
 DATABASE_URL= npm run e2e
 ```
 
-Saving and uploading aren't in the browser tests, because those need a real login and would change real content.
+To test the spam check, build and test with Cloudflare's published always-pass Turnstile keys and any dummy `RESEND_API_KEY`, adding `E2E_CONFIGURED=1` to the test run.
 
-To test the form with email and the spam check, start a server with those settings, using Cloudflare's published always-pass test keys and any dummy `RESEND_API_KEY`, then run `E2E_CONFIGURED=1 npm run e2e`.
+## Database changes
 
-## Deploy
+Tables are defined in `prisma/schema.prisma`. After changing it, run `npx prisma migrate dev --name what-changed`. Deploys don't run migrations, so apply them with `npm run db:migrate` before pushing code that needs them.
 
-The project is on Vercel and linked to this repo:
+Saved content is checked against `lib/content/schema.ts` on every read. Give any new required field a default, or reading older content will fail.
 
-- Pushing to `main` deploys to production.
-- Pushing any other branch creates a preview deployment. Previews use the same database as production.
+## Deployment
 
-### Moving to a final domain
+The project deploys to Vercel from this repository. Pushing to `main` deploys to production, and any other branch gets a private preview. Previews use the same database as production.
 
-1. Add the domain in Vercel (Project, Settings, Domains) and follow its DNS instructions.
-2. Set `NEXT_PUBLIC_SITE_URL` to the new address.
-3. In Clerk, create the production instance for that domain and replace the two Clerk keys. Clerk's production mode needs your own domain, so on `vercel.app` the login page shows a small "Development mode" label.
-4. Redeploy, then sign in again. A production Clerk instance starts with no users.
-5. Add the new hostname to the Turnstile widget, if you use it.
+**Moving to a custom domain:**
 
-## Private files
-
-`docs/reference/` and `assets-inbox/` are git-ignored on purpose. The old CV in `docs/reference/` holds other people's contact details, and this repo is public.
+1. Add the domain in Vercel and set `NEXT_PUBLIC_SITE_URL`.
+2. Create a Clerk production instance for the domain, replace the two Clerk keys, and add the owner's email to its allowlist.
+3. Add the hostname to the Turnstile widget in Cloudflare.
+4. Redeploy.

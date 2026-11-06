@@ -5,7 +5,7 @@ import { requireAdmin } from "@/lib/auth/admin";
 import { getContent } from "@/lib/content/get-content";
 import { CONTENT_ID, siteContentSchema } from "@/lib/content/schema";
 import { isSectionKey, type SectionKey } from "@/lib/content/sections";
-import { CV_PATH } from "@/lib/cv";
+import { CV_PATH } from "@/lib/cv/path";
 import { getDb, isDatabaseConfigured } from "@/lib/db";
 
 export type SaveResult =
