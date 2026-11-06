@@ -69,9 +69,15 @@ describe("the hero", () => {
 
   test("shows the tools Ronil named", () => {
     const names = defaultContent.hero.tools.map((tool) => tool.name);
-    for (const name of ["Claude", "ChatGPT", "Vercel", "Neon", "Supabase"]) {
+    for (const name of ["Claude", "ChatGPT", "Vercel", "Neon", "Supabase", "Stripe"]) {
       expect(names).toContain(name);
     }
+  });
+
+  test("lists Stripe with the payment skills, so it shows on the site and the CV", () => {
+    const fullStack = defaultContent.resume.skillGroups.find((group) => group.name === "Full-Stack Development");
+    expect(fullStack?.skills).toContain("Stripe");
+    expect(defaultContent.hero.tools.find((tool) => tool.name === "Stripe")?.icon).toBe("/icons/tools/stripe.svg");
   });
 });
 
