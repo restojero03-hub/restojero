@@ -46,6 +46,7 @@ const starter: SiteContentInput = {
       { name: "TypeScript", icon: "/icons/tools/typescript.svg", invertInDark: false },
       { name: "PostgreSQL", icon: "/icons/tools/postgresql.svg", invertInDark: false },
       { name: "Tailwind CSS", icon: "/icons/tools/tailwindcss.svg", invertInDark: false },
+      { name: "Stripe", icon: "/icons/tools/stripe.svg", invertInDark: false },
       { name: "WordPress", icon: "/icons/tools/wordpress.svg", invertInDark: true },
       { name: "Meta Ads", icon: "/icons/tools/meta.svg", invertInDark: false },
       { name: "Zapier", icon: "/icons/tools/zapier.svg", invertInDark: false },
@@ -644,7 +645,7 @@ const starter: SiteContentInput = {
     skillGroups: [
       {
         name: "Full-Stack Development",
-        skills: ["Next.js", "React", "TypeScript", "Node.js", "PostgreSQL", "Prisma", "Neon", "Supabase", "Tailwind CSS", "shadcn/ui", "Better Auth", "Xendit", "Vercel", "GitHub", "AWS"],
+        skills: ["Next.js", "React", "TypeScript", "Node.js", "PostgreSQL", "Prisma", "Neon", "Supabase", "Tailwind CSS", "shadcn/ui", "Better Auth", "Stripe", "Xendit", "Vercel", "GitHub", "AWS"],
       },
       {
         name: "AI",
