@@ -24,6 +24,10 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
       signInFallbackRedirectUrl="/dashboard"
       afterSignOutUrl="/sign-in"
       appearance={{ variables: { colorPrimary: "#e4004b" } }}
+      // Clerk's default heading names the Clerk app ("Continue to restojero-auth").
+      localization={{
+        signIn: { start: { title: "Sign in", titleCombined: "Sign in", subtitle: "", subtitleCombined: "" } },
+      }}
     >
       {children}
     </ClerkProvider>

@@ -14,7 +14,7 @@ describe("personJsonLd", () => {
     expect(person.name).toBe("Ronil Estojero");
     expect(person.alternateName).toBe("Engr. Nil");
     expect(person.jobTitle).toBe("AI Full-Stack Developer");
-    expect(person.url).toBe("https://restojero.vercel.app");
+    expect(person.url).toBe("https://restojero.conexapro.io");
     expect(person.sameAs).toEqual(defaultContent.site.socialLinks.map((link) => link.url));
     expect(person.address.addressLocality).toBe("Palo");
   });
@@ -45,9 +45,9 @@ describe("jsonLdScript", () => {
 });
 
 describe("getSiteUrl", () => {
-  test("defaults to the free Vercel address", () => {
+  test("defaults to the site domain", () => {
     vi.stubEnv("NEXT_PUBLIC_SITE_URL", "");
-    expect(getSiteUrl()).toBe("https://restojero.vercel.app");
+    expect(getSiteUrl()).toBe("https://restojero.conexapro.io");
   });
 
   test("reads the one setting and drops a trailing slash", () => {
@@ -58,7 +58,7 @@ describe("getSiteUrl", () => {
 
 describe("sitemap", () => {
   test("lists the one page on the site URL", () => {
-    expect(sitemap().map((entry) => entry.url)).toEqual(["https://restojero.vercel.app/"]);
+    expect(sitemap().map((entry) => entry.url)).toEqual(["https://restojero.conexapro.io/"]);
   });
 });
 
@@ -66,6 +66,6 @@ describe("robots", () => {
   test("allows the site, keeps the dashboard out, and points to the sitemap", () => {
     const result = robots();
     expect(result.rules).toEqual({ userAgent: "*", allow: "/", disallow: ["/dashboard", "/sign-in"] });
-    expect(result.sitemap).toBe("https://restojero.vercel.app/sitemap.xml");
+    expect(result.sitemap).toBe("https://restojero.conexapro.io/sitemap.xml");
   });
 });
