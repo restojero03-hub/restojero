@@ -4,7 +4,7 @@ import { Menu, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { BookCallButton } from "@/components/site/book-call-button";
 import { Logo } from "@/components/site/logo";
-import { ThemeToggle } from "@/components/theme-toggle";
+import { ThemeToggle } from "@/components/theme/theme-toggle";
 import type { NavLink } from "@/lib/content/nav";
 import type { SiteContent } from "@/lib/content/schema";
 import { cn } from "@/lib/utils";

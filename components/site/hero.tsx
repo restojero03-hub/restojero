@@ -2,7 +2,7 @@ import Image from "next/image";
 import { BookCallButton } from "@/components/site/book-call-button";
 import { SocialLinks } from "@/components/site/social-links";
 import { TypedTitles } from "@/components/site/typed-titles";
-import { CV_PATH } from "@/lib/cv";
+import { CV_PATH } from "@/lib/cv/path";
 import type { SiteContent, Tool } from "@/lib/content/schema";
 import { cn } from "@/lib/utils";
 

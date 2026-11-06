@@ -2,7 +2,7 @@
 
 import { useActionState, useCallback, useRef, useState } from "react";
 import { submitContact } from "@/lib/contact/actions";
-import { Turnstile, type TurnstileHandle } from "@/components/contact/turnstile";
+import { Turnstile, type TurnstileHandle } from "@/components/site/turnstile";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";

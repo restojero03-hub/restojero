@@ -1,6 +1,6 @@
 import { beforeAll, describe, expect, test } from "vitest";
 import { getDocument } from "pdfjs-dist/legacy/build/pdf.mjs";
-import { renderCv } from "@/pdf/cv-document";
+import { renderCv } from "@/lib/cv/cv-document";
 import { defaultContent } from "@/content/defaults";
 import { findPrivateTerms, PHONE_PATTERN } from "./helpers/private-terms";
 

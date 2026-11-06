@@ -2,6 +2,7 @@
   "name": "restojero",
   "version": "0.1.0",
   "private": true,
+  "description": "Portfolio site for Ronil Estojero, with a dashboard for editing all of its content.",
   "scripts": {
     "dev": "next dev",
     "build": "next build",

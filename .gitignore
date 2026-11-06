@@ -53,5 +53,8 @@ playwright-report/
 # env template is safe to commit
 !.env.example
 
-# local tooling
+# local tooling: AI assistant notes and the planning docs written while building
 .claude/
+AGENTS.md
+CLAUDE.md
+docs/superpowers/

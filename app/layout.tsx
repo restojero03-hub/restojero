@@ -1,7 +1,7 @@
 import { Analytics } from "@vercel/analytics/next";
 import type { Metadata } from "next";
 import { Montserrat, Poppins } from "next/font/google";
-import { ThemeProvider } from "@/components/theme-provider";
+import { ThemeProvider } from "@/components/theme/theme-provider";
 import { getContent } from "@/lib/content/get-content";
 import { getSiteUrl } from "@/lib/site-url";
 import "./globals.css";

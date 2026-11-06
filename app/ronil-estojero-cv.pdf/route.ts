@@ -1,5 +1,5 @@
 import { getContent } from "@/lib/content/get-content";
-import { renderCv } from "@/pdf/cv-document";
+import { renderCv } from "@/lib/cv/cv-document";
 
 // Built once and rebuilt when the dashboard saves, so it always matches the site.
 export const dynamic = "force-static";

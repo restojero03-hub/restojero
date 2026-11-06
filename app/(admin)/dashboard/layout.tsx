@@ -2,7 +2,7 @@ import { SignOutButton } from "@clerk/nextjs";
 import { ExternalLink } from "lucide-react";
 import type { ReactNode } from "react";
 import { DashboardNav } from "@/components/dashboard/nav";
-import { ThemeToggle } from "@/components/theme-toggle";
+import { ThemeToggle } from "@/components/theme/theme-toggle";
 import { getAdmin } from "@/lib/auth/admin";
 import { getDb, isDatabaseConfigured } from "@/lib/db";
 
