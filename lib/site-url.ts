@@ -1,4 +1,4 @@
-const DEFAULT_SITE_URL = "https://restojero.vercel.app";
+const DEFAULT_SITE_URL = "https://restojero.conexapro.io";
 
 // The one setting to change when the site moves to its final domain.
 export function getSiteUrl(): string {

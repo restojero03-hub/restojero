@@ -2,7 +2,7 @@
 
 The portfolio of Ronil Estojero, a freelance full-stack developer, digital marketer and funnel builder. It includes a private dashboard where the owner edits every word and image on the site without touching code.
 
-**Live:** [restojero.vercel.app](https://restojero.vercel.app)
+**Live:** [restojero.conexapro.io](https://restojero.conexapro.io)
 
 ![The home page in dark mode](docs/screenshot.webp)
 
@@ -92,7 +92,7 @@ Set these in Vercel and in `.env.local`. Never commit them. `.env.example` lists
 | `BLOB_READ_WRITE_TOKEN` | Image uploads |
 | `NEXT_PUBLIC_TURNSTILE_SITE_KEY`, `TURNSTILE_SECRET_KEY` | Spam check on the contact form |
 | `RESEND_API_KEY`, `RESEND_FROM_EMAIL`, `CONTACT_TO_EMAIL` | Optional: also email each message |
-| `NEXT_PUBLIC_SITE_URL` | Optional: the site's address. Defaults to `https://restojero.vercel.app`. |
+| `NEXT_PUBLIC_SITE_URL` | Optional: the site's address. Defaults to `https://restojero.conexapro.io`. |
 
 The contact form appears when a database is connected, or when email and Turnstile are both set. Messages are capped at 30 an hour across the site, and email only goes out for a message that was saved or passed Turnstile.
 
@@ -132,7 +132,7 @@ Saved content is checked against `lib/content/schema.ts` on every read. Give any
 
 The project deploys to Vercel from this repository. Pushing to `main` deploys to production, and any other branch gets a private preview. Previews use the same database as production.
 
-**Moving to a custom domain:**
+**Changing the domain:**
 
 1. Add the domain in Vercel and set `NEXT_PUBLIC_SITE_URL`.
 2. Create a Clerk production instance for the domain, replace the two Clerk keys, and add the owner's email to its allowlist.
